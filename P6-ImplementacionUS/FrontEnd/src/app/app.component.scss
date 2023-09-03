@@ -1,0 +1,267 @@
+@import "../styles.scss";
+
+$color-salmon: #fe456d;
+$color-barbie: #fe46a5;
+$color-claro: #fa9fb3;
+
+header {
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    background: linear-gradient(to right, $color-salmon 0, $color-salmon 70%, $color-barbie 100%);
+    color: white;
+    font-weight: 600;
+    @include respond(phone) {
+        height: 7vh;
+    }
+    img {
+        width: 20%;
+        margin-left: 16px;
+    }
+}
+
+@keyframes entrada {
+    from {
+        opacity: 0;
+        transform: translateX(-100px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+}
+
+@keyframes entrada-derecha {
+    from {
+        opacity: 0;
+        transform: translateX(100px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+}
+
+@keyframes salida-izquierda {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateX(-100px);
+    }
+
+
+}
+
+.pedidos {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #fff;
+    margin-top: 5vh;
+    &__container {
+        animation: entrada 1s ease-in-out;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        border-radius: 15px;
+        padding: 1rem 0;
+
+        background: linear-gradient(100deg, $color-salmon 0, $color-salmon 65%, $color-barbie 100%);
+        box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+
+        @include respond(phone) {
+            width: 90%;
+            max-width: 90%;
+        }
+    }
+
+    &__title {
+        text-align: center;
+
+        @include respond(phone) {
+            font-size: 1.7rem;
+            margin-bottom: 1rem;
+
+        }
+    }
+
+    &__subtitle {
+        font-weight: 500;
+        width: 90%;
+        text-align: center;
+    }
+
+    &-tipo {
+        display: flex;
+        justify-content: space-between;
+        width: 90%;
+        margin-top: 2rem;
+        gap: 2.5rem;
+
+        @include respond(phone) {
+            flex-direction: column;
+        }
+
+        &__container {
+            display: flex;
+            justify-content: space-between;
+            align-content: center;
+            align-items: center;
+            padding: 7.5%;
+            border-radius: 15px;
+            box-shadow: 5px 10px 20px rgba(0, 0, 0, 0.5);
+            background-color: $color-claro;
+        }
+
+        &__imagen {
+            width: 30%;
+        }
+
+        &__title {
+            @include respond(phone) {
+                font-size: 1.4rem;
+            }
+        }
+    }
+    &__buttons{
+        width:90%;
+        display: flex;
+        justify-content: space-between;
+    }
+    &__button{
+        width: 40%;
+        margin-top: 2rem;
+        padding: 1rem;
+        border-radius: 15px;
+        border: none;
+        background-color: $color-claro;
+        color: #fff;
+        font-size: 1.2rem;
+        font-weight: 500;
+        box-shadow: 5px 10px 20px rgba(0, 0, 0, 0.5);
+        cursor: pointer;
+        &-volver{
+            background-color: #f7dd8b;
+
+        }
+    }
+    &-form {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 2rem;
+        &__resized{
+            width: 90%;
+            justify-content: center;
+        }
+        &__textarea {
+            width: 85%;
+            height: 25vh;
+            border-radius: 15px;
+            border: none;
+            padding: 1rem;
+            font-size: 1.2rem;
+            resize: none;
+            box-shadow: 5px 10px 20px rgba(0, 0, 0, 0.5);
+            background-color: $color-claro;
+            color: #fff;
+
+            &::placeholder {
+                color: #fff;
+            }
+        }
+
+        &__file {
+            width: 85%;
+            margin-top: 1rem;
+            height: 10vh;
+            border-radius: 15px;
+            border: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            padding: 1rem;
+            font-size: 1.2rem;
+            box-shadow: 5px 10px 20px rgba(0, 0, 0, 0.5);
+            background-color: $color-claro;
+            color: #fff;
+
+            cursor: pointer;
+
+            img {
+                width: 20%;
+                margin-right: 1rem;
+            }
+
+            span {
+                width: 70%;
+                max-width: 70%;
+            }
+        }
+        &__input{
+            width: 100%;
+            margin-top: 1rem;
+           
+            border-radius: 15px;
+            border: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            padding: 1rem;
+            font-size: 1.2rem;
+            background-color: $color-claro;
+            color: #fff;
+
+            cursor: pointer;
+
+            &::placeholder {
+                color: #fff;
+
+            }
+        }
+
+        &__con-label{
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            label{
+                font-size: 1.2rem;
+                margin-right: 0.5rem;
+            }
+        }
+    }
+}
+
+
+.salida {
+    &-izquierda {
+        animation: salida-izquierda 0.5s ease-in-out forwards;
+    }
+}
+
+.inputfile {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+
+
