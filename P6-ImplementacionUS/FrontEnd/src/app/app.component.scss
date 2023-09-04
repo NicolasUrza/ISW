@@ -3,7 +3,7 @@
 $color-salmon: #fe456d;
 $color-barbie: #fe46a5;
 $color-claro: #fa9fb3;
-
+$color-blanco:#f7ebf6;
 header {
     position: sticky;
     top: 0;
@@ -15,9 +15,11 @@ header {
     background: linear-gradient(to right, $color-salmon 0, $color-salmon 70%, $color-barbie 100%);
     color: white;
     font-weight: 600;
+
     @include respond(phone) {
         height: 7vh;
     }
+
     img {
         width: 20%;
         margin-left: 16px;
@@ -68,17 +70,32 @@ header {
     display: flex;
     flex-direction: column;
     align-items: center;
-    color: #fff;
+    color: #111111;
     margin-top: 5vh;
+    animation: entrada 0.5s ease-in-out;
+
+    &__header {
+        width: 100%;
+        background: linear-gradient(100deg, $color-salmon 0, $color-salmon 65%, $color-barbie 100%);
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
+        color: #fff;
+
+        @include respond(phone) {
+            width: 90%;
+            max-width: 90%;
+        }
+    }
+
     &__container {
-        animation: entrada 1s ease-in-out;
         display: flex;
         flex-direction: column;
         align-items: center;
-        border-radius: 15px;
+        border-bottom-left-radius: 15px;
+        border-bottom-right-radius: 15px;
         padding: 1rem 0;
 
-        background: linear-gradient(100deg, $color-salmon 0, $color-salmon 65%, $color-barbie 100%);
+        // background: linear-gradient(100deg, $color-salmon 0, $color-salmon 65%, $color-barbie 100%);
         box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
 
         @include respond(phone) {
@@ -122,7 +139,7 @@ header {
             padding: 7.5%;
             border-radius: 15px;
             box-shadow: 5px 10px 20px rgba(0, 0, 0, 0.5);
-            background-color: $color-claro;
+            background: linear-gradient(to right, $color-claro 0, $color-salmon, $color-barbie 40%, $color-blanco 40%);
         }
 
         &__imagen {
@@ -135,38 +152,59 @@ header {
             }
         }
     }
-    &__buttons{
-        width:90%;
+
+    &__buttons {
+        width: 90%;
         display: flex;
         justify-content: space-between;
+
+        &__onlyone {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
     }
-    &__button{
+
+    &__button {
         width: 40%;
         margin-top: 2rem;
         padding: 1rem;
         border-radius: 15px;
         border: none;
-        background-color: $color-claro;
+        background:linear-gradient( $color-salmon 0, $color-salmon 65%, $color-barbie 100%);
         color: #fff;
         font-size: 1.2rem;
         font-weight: 500;
         box-shadow: 5px 10px 20px rgba(0, 0, 0, 0.5);
         cursor: pointer;
-        &-volver{
-            background-color: #f7dd8b;
 
+        &-volver {
+            background: linear-gradient(to right, #facf40, #ffc70e,  #f8c726, #facf40 );
         }
     }
+
     &-form {
         width: 100%;
         display: flex;
         flex-direction: column;
         align-items: center;
         margin-top: 2rem;
-        &__resized{
+
+        &__fieldset {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 2rem;
+            border: none;
+
+        }
+
+        &__resized {
             width: 90%;
             justify-content: center;
         }
+
         &__textarea {
             width: 85%;
             height: 25vh;
@@ -176,11 +214,11 @@ header {
             font-size: 1.2rem;
             resize: none;
             box-shadow: 5px 10px 20px rgba(0, 0, 0, 0.5);
-            background-color: $color-claro;
-            color: #fff;
+            background-color: $color-blanco;
+            color: #111;
 
             &::placeholder {
-                color: #fff;
+                color: #191919;
             }
         }
 
@@ -197,8 +235,9 @@ header {
             padding: 1rem;
             font-size: 1.2rem;
             box-shadow: 5px 10px 20px rgba(0, 0, 0, 0.5);
-            background-color: $color-claro;
-            color: #fff;
+            background-color: $color-blanco;
+            background: linear-gradient(to right, $color-claro 0, $color-salmon, $color-barbie 27%, $color-blanco 27%);
+            color: #111;
 
             cursor: pointer;
 
@@ -212,34 +251,30 @@ header {
                 max-width: 70%;
             }
         }
-        &__input{
+
+        &__input {
             width: 100%;
             margin-top: 1rem;
-           
             border-radius: 15px;
             border: none;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
+            flex: 5;
             padding: 1rem;
             font-size: 1.2rem;
-            background-color: $color-claro;
-            color: #fff;
-
+            background-color: $color-blanco;
+            color: #111;
             cursor: pointer;
 
             &::placeholder {
-                color: #fff;
-
+                color: #191919;
             }
         }
 
-        &__con-label{
+        &__con-label {
             display: flex;
             align-items: center;
             justify-content: flex-start;
-            label{
+
+            label {
                 font-size: 1.2rem;
                 margin-right: 0.5rem;
             }
@@ -263,5 +298,23 @@ header {
     z-index: -1;
 }
 
+.especial {
+    &__label {
+        font-size: 1.2rem;
+    }
 
+    &___input {
+        width: 90%;
 
+    }
+}
+
+.error {
+    border: solid 5px red;
+    &__label{
+        width: 90%;
+        display: flex;
+        justify-content: flex-start;
+        color: red;
+    }
+}

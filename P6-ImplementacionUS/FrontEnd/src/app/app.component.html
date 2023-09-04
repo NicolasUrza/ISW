@@ -5,70 +5,282 @@
 
 </header>
 <main>
-  <section class="pedidos">
-    <article class="pedidos__container" [ngClass]="{'salida-izquierda': salidaIzquierda}" *ngIf="vistaActual==0">
-      <h1 class="pedidos__title">Pedidos</h1>
-      <p class="pedidos__subtitle">Pide lo que quieras y recibelo en la comodidad de tu hogar</p>
-      <div class="pedidos-tipo">
-        <div class="pedidos-tipo__container">
-          <img class="pedidos-tipo__imagen" alt="Restaurante" src="assets/restaurant.png" />
-          <h2 class="pedidos-tipo__title">Pedir a comercio</h2>
-        </div>
-        <div class="pedidos-tipo__container" (click)="CambiarVista(1)">
-          <img class="pedidos-tipo__imagen" alt="lo que sea" src="assets/lo-que-sea.png" />
-          <h2 class="pedidos-tipo__title">Pedir lo que sea</h2>
+  <section>
+    <!--Seleccion del tipo de pedido-->
+    <article class="pedidos" [ngClass]="{'salida-izquierda': salidaIzquierda}" *ngIf="vistaActual==0">
+      <div class="pedidos__header">
+        <h1 class="pedidos__title">Pedidos</h1>
+      </div>
+      <div class="pedidos__container">
+        <p class="pedidos__subtitle">Pide lo que quieras y recíbelo en la comodidad de tu hogar</p>
+        <div class="pedidos-tipo">
+          <div class="pedidos-tipo__container">
+            <img class="pedidos-tipo__imagen" alt="Restaurante" src="assets/restaurant.png" />
+            <h2 class="pedidos-tipo__title">Pedir a comercio</h2>
+          </div>
+          <div class="pedidos-tipo__container" (click)="CambiarVista(1)">
+            <img class="pedidos-tipo__imagen" alt="lo que sea" src="assets/lo-que-sea.png" />
+            <h2 class="pedidos-tipo__title">Pedir lo que sea</h2>
+          </div>
         </div>
       </div>
     </article>
-    <article class="pedidos__container" [ngClass]="{'salida-izquierda': salidaIzquierda}" *ngIf="vistaActual==1">
-      <h1 class="pedidos__title">Pide lo que sea</h1>
-      <p class="pedidos__subtitle">Cuentanos que productos quieres recibir</p>
-      <form [formGroup]="pedidoForm" class="pedidos-form">
-        <textarea class="pedidos-form__textarea" formControlName="objetos"
-          placeholder="Escribe los objetos de tu pedido..."></textarea>
 
-        <input type="file" formControlName="imagen" name="imagen" id="imagen" class="inputfile" />
-        <label for="imagen" class="pedidos-form__file">
-          <img src="assets/img-picker.png">
-          <span class="iborrainputfile" *ngIf="!ExisteImagen()">Puedes incluir una imagen si prefieres</span>
-          <span class="iborrainputfile" *ngIf="ExisteImagen()">Imagen cargada</span>
-        </label>
-      </form>
-      <div class="pedidos__buttons">
-        <button class="pedidos__button pedidos__button-volver" (click)="CambiarVista(this.vistaActual -1)">
-          Atras</button>
-        <button class="pedidos__button" (click)="CambiarVista(this.vistaActual+1)"> Continuar</button>
+    <!--Pide lo que sea- selecccion de objetos-->
+    <article class="pedidos" [ngClass]="{'salida-izquierda': salidaIzquierda}" *ngIf="vistaActual==1">
+      <div class="pedidos__header">
+        <h1 class="pedidos__title">Pide lo que sea</h1>
+      </div>
+      <div class="pedidos__container">
+        <p class="pedidos__subtitle">Cuéntanos qué productos quieres recibir</p>
+        <form [formGroup]="pedidoForm" class="pedidos-form">
+          <textarea class="pedidos-form__textarea" formControlName="objetos"
+            placeholder="Escribe los objetos de tu pedido..."
+            [ngClass]="{error:TieneErrores(this.pedidoForm, 'objetos') }"></textarea>
+          <p class="error__label"*ngIf=" TieneErrores(this.pedidoForm, 'objetos') && this.pedidoForm.controls['objetos'].hasError('required')">
+            Este campo es requerido</p>
+            <p class="error__label"*ngIf=" TieneErrores(this.pedidoForm, 'objetos') && this.pedidoForm.controls['objetos'].hasError('maxlength')"> No debe exceder los 1200 caracteres </p>
+          <input type="file" formControlName="imagen" name="imagen" id="imagen" class="inputfile" />
+          <label for="imagen" class="pedidos-form__file">
+            <img src="assets/img-picker.png">
+            <span class="iborrainputfile" *ngIf="!ExisteImagen()">Puedes incluir una imagen si prefieres</span>
+            <span class="iborrainputfile" *ngIf="ExisteImagen()">Imagen cargada</span>
+          </label>
+        </form>
+        <div class="pedidos__buttons">
+          <button class="pedidos__button pedidos__button-volver" (click)="CambiarVista(this.vistaActual -1)">
+            Atrás</button>
+          <button class="pedidos__button"
+            (click)="this.pedidoForm.invalid? submited=true:CambiarVista(this.vistaActual+1)"> Continuar</button>
+        </div>
       </div>
     </article>
-    <article class="pedidos__container" [ngClass]="{'salida-izquierda': salidaIzquierda}" *ngIf="vistaActual==2">
-      <h1 class="pedidos__title">Dónde lo buscamos</h1>
-      <p class="pedidos__subtitle">Describenos la direccion del local donde quieres que busquemos tu producto</p>
-      <form [formGroup]="localForm" class="pedidos-form pedidos-form__resized">
-        <div class="pedidos-form__con-label">
-          <label for="calle"> Calle:</label>
-          <input type="text" name="calle" id="calle" formControlName="calle" placeholder="Nombre de la calle"
-            class="pedidos-form__input" />
+
+    <!--Descripcion del local-->
+    <article class="pedidos" [ngClass]="{'salida-izquierda': salidaIzquierda}" *ngIf="vistaActual==2">
+      <div class="pedidos__header">
+        <h1 class="pedidos__title">Dónde lo buscamos</h1>
+      </div>
+      <div class="pedidos__container">
+        <p class="pedidos__subtitle">Descríbenos la dirección del local donde quieres que busquemos tu producto</p>
+        <form [formGroup]="localForm" class="pedidos-form pedidos-form__resized">
+          <div class="pedidos-form__con-label">
+            <label for="calle"> Calle:</label>
+            <input type="text" name="calle" id="calle" formControlName="calle" placeholder="Nombre de la calle"
+              class="pedidos-form__input" />
+          </div>
+          <div class="pedidos-form__con-label">
+            <label for="numero"> Número:</label>
+            <input type="number" name="numero" id="numero" formControlName="numero" placeholder="Número de la calle"
+              class="pedidos-form__input" />
+          </div>
+          <div class="pedidos-form__con-label">
+            <label for="ciudad"> Ciudad:</label>
+            <select class="pedidos-form__input" name="ciudad" id="ciudad" formControlName="ciudad">
+              <option value="Cochabamba">Cochabamba</option>
+              <option value="La Paz">La Paz</option>
+              <option value="Santa Cruz">Santa Cruz</option>
+              <option value="Córdoba">Córdoba</option>
+            </select>
+
+          </div>
+          <div class="pedidos-form__con-label">
+            <label for="referencia"> Referencia:</label>
+            <input type="text" name="referencia" id="referencia" formControlName="referencia"
+              placeholder="Referencias del lugar..." class="pedidos-form__input" />
+          </div>
+        </form>
+        <div class="pedidos__buttons">
+          <button class="pedidos__button pedidos__button-volver" (click)="CambiarVista(this.vistaActual -1)">
+            Atrás</button>
+          <button class="pedidos__button" (click)="CambiarVista(this.vistaActual+1)"> Continuar</button>
         </div>
-        <div class="pedidos-form__con-label">
-          <label for="numero"> Número:</label>
-          <input type="text" name="numero" id="numero" formControlName="numero" placeholder="Número de la calle"
-            class="pedidos-form__input" />
+      </div>
+    </article>
+
+    <!--Descripcion del lugar de entrega-->
+    <article class="pedidos" [ngClass]="{'salida-izquierda': salidaIzquierda}" *ngIf="vistaActual==3">
+      <div class="pedidos__header">
+        <h1 class="pedidos__title">Dónde lo entregamos</h1>
+      </div>
+      <div class="pedidos__container">
+        <p class="pedidos__subtitle">Descríbenos la dirección del entrega</p>
+        <form [formGroup]="lugarEntregaForm" class="pedidos-form pedidos-form__resized">
+          <div class="pedidos-form__con-label">
+            <label for="calle"> Calle:</label>
+            <input type="text" name="calle" id="calle" formControlName="calle" placeholder="Nombre de la calle"
+              class="pedidos-form__input" />
+          </div>
+          <div class="pedidos-form__con-label">
+            <label for="numero"> Número:</label>
+            <input type="number" name="numero" id="numero" formControlName="numero" placeholder="Número de la calle"
+              class="pedidos-form__input" />
+          </div>
+          <div class="pedidos-form__con-label">
+            <label for="ciudad"> Ciudad:</label>
+            <select class="pedidos-form__input" name="ciudad" id="ciudad" formControlName="ciudad">
+              <option value="Cochabamba">Cochabamba</option>
+              <option value="La Paz">La Paz</option>
+              <option value="Santa Cruz">Santa Cruz</option>
+              <option value="Córdoba">Córdoba</option>
+            </select>
+          </div>
+          <div class="pedidos-form__con-label">
+            <label for="referencia"> Referencia:</label>
+            <input type="text" name="referencia" id="referencia" formControlName="referencia"
+              placeholder="Referencias del lugar..." class="pedidos-form__input" />
+          </div>
+          <fieldset class="pedidos-form__fieldset">
+            <input type="radio" name="entrega" id="lo-antes-posible" value="lo-antes-posible"
+              formControlName="entrega" />
+            <label for="lo-antes-posible">Lo antes posible</label>
+            <input type="radio" name="entrega" id="programar-entrega" value="programar-entrega"
+              formControlName="entrega" />
+            <label for="programar-entrega">Programar entrega</label>
+          </fieldset>
+          <div class="pedidos-form__con-label"
+            *ngIf="lugarEntregaForm.controls['entrega'].value == 'programar-entrega'">
+            <label for="fecha" class="pedidos-form__label">Fecha de entrega:</label>
+            <input type="date" name="fecha" id="fecha" formControlName="fecha" class="pedidos-form__input" />
+          </div>
+          <div class="pedidos-form__con-label"
+            *ngIf="lugarEntregaForm.controls['entrega'].value == 'programar-entrega'">
+            <label for="hora" class="pedidos-form__label">Hora de entrega:</label>
+            <input type="time" name="hora" id="hora" formControlName="hora" class="pedidos-form__input" />
+          </div>
+
+        </form>
+        <div class="pedidos__buttons">
+          <button class="pedidos__button pedidos__button-volver" (click)="CambiarVista(this.vistaActual -1)">
+            Atrás</button>
+          <button class="pedidos__button" (click)="CambiarVista(this.vistaActual+1)"> Continuar</button>
         </div>
-        <div class="pedidos-form__con-label">
-          <label for="ciudad"> Ciudad:</label>
-          <input type="text" name="ciudad" id="ciudad" formControlName="ciudad" placeholder="Nombre de la ciudad"
-            class="pedidos-form__input" />
+      </div>
+    </article>
+
+    <!--Pagos-->
+    <article class="pedidos" [ngClass]="{'salida-izquierda': salidaIzquierda}" *ngIf="vistaActual==4">
+      <div class="pedidos__header">
+        <h1 class="pedidos__title">Pago</h1>
+      </div>
+      <div class="pedidos__container">
+        <p class="pedidos__subtitle">El total a abonar es: ${{TotalPago()}}</p>
+        <p class="pedidos__subtitle">Elige tu forma de pago: </p>
+        <div class="pedidos-tipo">
+          <div class="pedidos-tipo__container" (click)="MetodoDePago('Efectivo')">
+            <img class="pedidos-tipo__imagen" alt="Restaurante" src="assets/efectivo.png" />
+            <h2 class="pedidos-tipo__title">Efectivo</h2>
+          </div>
+          <div class="pedidos-tipo__container" (click)="MetodoDePago('Tarjeta')">
+            <img class="pedidos-tipo__imagen" alt="lo que sea" src="assets/tarjeta.png" />
+            <h2 class="pedidos-tipo__title">Débito/Crédito</h2>
+          </div>
         </div>
-        <div class="pedidos-form__con-label">
-          <label for="referencia"> Referencia:</label>
-          <input type="text" name="referencia" id="referencia" formControlName="referencia"
-            placeholder="Referencias del lugar..." class="pedidos-form__input" />
+        <div class="pedidos__buttons__onlyone">
+          <button class="pedidos__button pedidos__button-volver" (click)="CambiarVista(this.vistaActual -1)">
+            Atrás</button>
         </div>
-      </form>
-      <div class="pedidos__buttons">
-        <button class="pedidos__button pedidos__button-volver" (click)="CambiarVista(this.vistaActual -1)">
-          Atras</button>
-        <button class="pedidos__button" (click)="CambiarVista(this.vistaActual+1)"> Continuar</button>
+      </div>
+    </article>
+
+    <!--Efectivo-->
+    <article class="pedidos" [ngClass]="{'salida-izquierda': salidaIzquierda}"
+      *ngIf="vistaActual==5 && this.metodoPago=='Efectivo'">
+      <div class="pedidos__header">
+        <h1 class="pedidos__title">Efectivo</h1>
+      </div>
+      <div class="pedidos__container">
+        <p class="pedidos__subtitle">El total a abonar es: ${{TotalPago()}}</p>
+        <form [formGroup]="efectivoForm">
+          <div class="pedidos-form__con-label">
+            <label for="monto"> Monto:</label>
+            <input type="number" name="monto" id="monto" formControlName="monto"
+              placeholder="Monto con el que va a pagar" class="pedidos-form__input" />
+          </div>
+        </form>
+
+        <div class="pedidos__buttons">
+          <button class="pedidos__button pedidos__button-volver" (click)="CambiarVista(this.vistaActual -1)">
+            Atrás</button>
+          <button class="pedidos__button" (click)="CambiarVista(this.vistaActual+1)"> Continuar</button>
+        </div>
+      </div>
+    </article>
+    <!--Tarjeta-->
+    <article class="pedidos" [ngClass]="{'salida-izquierda': salidaIzquierda}"
+      *ngIf="vistaActual==5 && this.metodoPago=='Tarjeta'">
+      <div class="pedidos__header">
+        <h1 class="pedidos__title">Tarjeta</h1>
+      </div>
+      <div class="pedidos__container">
+        <p class="pedidos__subtitle">Ingresa los datos de tu tarjeta de Débito/Crédito</p>
+        <form [formGroup]="tarjetaForm" class="pedidos-form pedidos-form__resized">
+
+          <label for="nombre" class="especial__label"> Nombre y apellido del titular:</label>
+          <input type="text" name="nombre" id="nombre" formControlName="nombre"
+            placeholder="Nombre como aparece en la tarjeta" class="pedidos-form__input especial__input" />
+
+
+          <div class="pedidos-form__con-label">
+            <label for="numeroTarjeta"> Número de tarjeta:</label>
+            <input type="number" name="numeroTarjeta" id="numeroTarjeta" formControlName="numero"
+              placeholder="0000 0000 0000 0000" class="pedidos-form__input" />
+          </div>
+          <div class="pedidos-form__con-label">
+            <label for="fechaVencimiento"> Fecha de vencimiento:</label>
+            <input type="month" name="fechaVencimiento" id="fechaVencimiento" formControlName="vencimiento"
+              class="pedidos-form__input" />
+          </div>
+          <div class="pedidos-form__con-label">
+            <label for="codigo"> Código de seguridad:</label>
+            <input type="number" name="codigo" id="codigo" formControlName="codigo" placeholder="CVC"
+              class="pedidos-form__input" />
+          </div>
+        </form>
+        <div class="pedidos__buttons">
+          <button class="pedidos__button pedidos__button-volver" (click)="CambiarVista(this.vistaActual -1)">
+            Atrás</button>
+          <button class="pedidos__button" (click)="CambiarVista(this.vistaActual+1)"> Continuar</button>
+        </div>
+      </div>
+    </article>
+
+    <!--Confirmacion-->
+    <article class="pedidos" [ngClass]="{'salida-izquierda': salidaIzquierda}" *ngIf="vistaActual==6">
+      <div class="pedidos__header">
+        <h1 class="pedidos__title">Confirmar Pedido</h1>
+      </div>
+      <div class="pedidos__container">
+        <p class="pedidos__subtitle">Verifica que todo este en orden</p>
+        <p class="pedidos__subtitle">Productos Pedidos:</p>
+        <p class="pedidos__subtitle">{{pedidoForm.controls["objetos"].value}} </p>
+        <p class="pedidos__subtitle">Dirección del local:</p>
+        <p class="pedidos__subtitle">Calle: {{localForm.controls["calle"].value}} Número:
+          {{localForm.controls["numero"].value}} Ciudad: {{localForm.controls["ciudad"].value}} Referencias:
+          {{localForm.controls["referencia"].value}}</p>
+        <p class="pedidos__subtitle">Dirección de entrega:</p>
+        <p class="pedidos__subtitle">Calle: {{lugarEntregaForm.controls["calle"].value}} Número:
+          {{lugarEntregaForm.controls["numero"].value}} Ciudad: {{lugarEntregaForm.controls["ciudad"].value}}
+          Referencias:
+          {{lugarEntregaForm.controls["referencia"].value}}</p>
+        <p class="pedidos__subtitle" *ngif="lugarEntregaForm.controls['entrega'].value == 'lo-antes-posible'">Entrega lo
+          antes posible</p>
+        <p class="pedidos__subtitle" *ngif="lugarEntregaForm.controls['entrega'].value == 'programar-entrega'">Fecha de
+          entrega: {{lugarEntregaForm.controls["fecha"].value}} Hora de entrega:
+          {{lugarEntregaForm.controls["hora"].value}}</p>
+        <p class="pedidos__subtitle">Total a pagar: ${{TotalPago()}}</p>
+        <p class="pedidos__subtitle">Método de pago: {{this.metodoPago}}</p>
+        <p class="pedidos__subtitle" *ngIf="this.metodoPago=='Efectivo'">Monto a pagar en efectivo:
+          {{efectivoForm.controls["monto"].value}}</p>
+        <p class="pedidos__subtitle" *ngIf="this.metodoPago=='Tarjeta'">Nombre: {{tarjetaForm.controls["nombre"].value}}
+          Número: {{tarjetaForm.controls["numero"].value}} Fecha de vencimiento:
+          {{tarjetaForm.controls["vencimiento"].value}} Código de seguridad: {{tarjetaForm.controls["codigo"].value}}
+        </p>
+        <div class="pedidos__buttons">
+          <button class="pedidos__button pedidos__button-volver" (click)="CambiarVista(this.vistaActual -1)">
+            Atrás</button>
+          <button class="pedidos__button"> Confirmar</button>
+        </div>
       </div>
     </article>
   </section>
