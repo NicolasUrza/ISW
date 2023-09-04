@@ -216,9 +216,20 @@ header {
             box-shadow: 5px 10px 20px rgba(0, 0, 0, 0.5);
             background-color: $color-blanco;
             color: #111;
-
             &::placeholder {
                 color: #191919;
+            }
+            &__container{
+                position: relative;
+                font-size: 1.2rem;
+                width: 100%;
+                display: flex;
+                justify-content: center;
+            }
+            &__contador{
+                position:absolute;
+                bottom: 0;
+                right: 9%;
             }
         }
 

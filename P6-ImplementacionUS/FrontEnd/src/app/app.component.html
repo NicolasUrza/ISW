@@ -34,12 +34,21 @@
       <div class="pedidos__container">
         <p class="pedidos__subtitle">Cuéntanos qué productos quieres recibir</p>
         <form [formGroup]="pedidoForm" class="pedidos-form">
-          <textarea class="pedidos-form__textarea" formControlName="objetos"
-            placeholder="Escribe los objetos de tu pedido..."
-            [ngClass]="{error:TieneErrores(this.pedidoForm, 'objetos') }"></textarea>
-          <p class="error__label"*ngIf=" TieneErrores(this.pedidoForm, 'objetos') && this.pedidoForm.controls['objetos'].hasError('required')">
+          <div class="pedidos-form__textarea__container" >
+            <textarea class="pedidos-form__textarea" formControlName="objetos"
+              placeholder="Escribe los objetos de tu pedido..."
+              [ngClass]="{error:TieneErrores(this.pedidoForm, 'objetos') }">
+          </textarea>
+            <div class="pedidos-form__textarea__contador">
+              {{pedidoForm.controls['objetos'].value!.length}}/1200
+            </div>
+          </div>
+          <p class="error__label"
+            *ngIf=" TieneErrores(this.pedidoForm, 'objetos') && this.pedidoForm.controls['objetos'].hasError('required')">
             Este campo es requerido</p>
-            <p class="error__label"*ngIf=" TieneErrores(this.pedidoForm, 'objetos') && this.pedidoForm.controls['objetos'].hasError('maxlength')"> No debe exceder los 1200 caracteres </p>
+          <p class="error__label"
+            *ngIf=" TieneErrores(this.pedidoForm, 'objetos') && this.pedidoForm.controls['objetos'].hasError('maxlength')">
+            No debe exceder los 1200 caracteres </p>
           <input type="file" formControlName="imagen" name="imagen" id="imagen" class="inputfile" />
           <label for="imagen" class="pedidos-form__file">
             <img src="assets/img-picker.png">
