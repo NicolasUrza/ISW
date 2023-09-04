@@ -16,6 +16,7 @@ export class AppComponent {
   metodoPago = "Efectivo";
   imagenSubida = "";
   submited = false;
+  flipped=false;
   pedidoForm = new FormGroup({
     objetos: new FormControl('', [Validators.required, Validators.maxLength(1200)]),
     imagen: new FormControl('')

@@ -3,7 +3,8 @@
 $color-salmon: #007090;
 $color-barbie: #01a7c2;
 $color-claro: #a3bac3;
-$color-blanco:#EAEBED;
+$color-blanco: #EAEBED;
+
 header {
     position: sticky;
     top: 0;
@@ -176,7 +177,7 @@ header {
         padding: 1rem;
         border-radius: 15px;
         border: none;
-        background:linear-gradient( $color-salmon 0, $color-salmon 65%, $color-barbie 100%);
+        background: linear-gradient($color-salmon 0, $color-salmon 65%, $color-barbie 100%);
         color: #fff;
         font-size: 1.2rem;
         font-weight: 500;
@@ -184,7 +185,7 @@ header {
         cursor: pointer;
 
         &-volver {
-            background: linear-gradient(to right, #facf40, #ffc70e,  #f8c726, #facf40 );
+            background: linear-gradient(to right, #facf40, #ffc70e, #f8c726, #facf40);
         }
     }
 
@@ -218,21 +219,24 @@ header {
             padding: 1rem;
             font-size: 1.2rem;
             resize: none;
-            
+
             background-color: $color-blanco;
             color: #111;
+
             &::placeholder {
                 color: #191919;
             }
-            &__container{
+
+            &__container {
                 position: relative;
                 font-size: 1.2rem;
                 width: 100%;
                 display: flex;
                 justify-content: center;
             }
-            &__contador{
-                position:absolute;
+
+            &__contador {
+                position: absolute;
                 bottom: 0;
                 right: 9%;
             }
@@ -250,7 +254,7 @@ header {
 
             padding: 1rem;
             font-size: 1.2rem;
-            
+
             background-color: $color-blanco;
             background: linear-gradient(to right, $color-claro 0, $color-salmon, $color-barbie 27%, $color-blanco 27%);
             color: #111;
@@ -327,10 +331,83 @@ header {
 
 .error {
     border: solid 5px red;
-    &__label{
+
+    &__label {
         width: 90%;
         display: flex;
         justify-content: flex-start;
         color: red;
     }
+}
+
+.tarjeta {
+    width: 90%;
+    height: 75px;
+    -webkit-perspective: 1000;
+    -moz-perspective: 1000;
+    -o-perspective: 1000;
+    perspective: 1000;
+    width: 90%;
+    display: flex;
+    justify-content: center;
+    height: 75px;
+    color: #fff;
+
+    &__flipper {
+        -webkit-transition: 0.6s;
+        -webkit-transform-style: preserve-3d;
+
+        -moz-transition: 0.6s;
+        -moz-transform-style: preserve-3d;
+
+        -o-transition: 0.6s;
+        -o-transform-style: preserve-3d;
+
+        transition: 0.6s;
+        transform-style: preserve-3d;
+        width: 300px;
+        height: 150px;
+        position: relative;
+    }
+
+    &__front {
+        width: 300px;
+        height: 150px;
+        border-radius: 15px;
+        background-color: $color-salmon;
+        -webkit-backface-visibility: hidden;
+        -moz-backface-visibility: hidden;
+        -o-backface-visibility: hidden;
+        backface-visibility: hidden;
+
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    &__back {
+        width: 300px;
+        height: 150px;
+        border-radius: 15px;
+        background-color: $color-salmon;
+        -webkit-backface-visibility: hidden;
+        -moz-backface-visibility: hidden;
+        -o-backface-visibility: hidden;
+        backface-visibility: hidden;
+        -webkit-transform: rotateY(180deg);
+        -moz-transform: rotateY(180deg);
+      -o-transform: rotateY(180deg);
+        transform: rotateY(180deg);
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+}
+
+.flipped {
+    -webkit-transform: rotateY(180deg);
+    -moz-transform: rotateY(180deg);
+    -o-transform: rotateY(180deg);
+    transform: rotateY(180deg);
 }

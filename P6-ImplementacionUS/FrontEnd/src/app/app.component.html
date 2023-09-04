@@ -271,31 +271,44 @@
     <!--Tarjeta-->
     <article class="pedidos" [ngClass]="{'salida-izquierda': salidaIzquierda}"
       *ngIf="vistaActual==5 && this.metodoPago=='Tarjeta'">
-      <div class="pedidos__header">
+      <!-- <div class="pedidos__header">
         <h1 class="pedidos__title">Tarjeta</h1>
+      </div> -->
+      <div class="tarjeta">
+        <div class="tarjeta__flipper" [ngClass]="{flipped: flipped}" (mousedown)="flipped=!flipped">
+        <div class="tarjeta__front">
+          <h1 class="tarjeta__title">Tarjeta</h1>
+          </div>
+        <div class="tarjeta__back">
+          <p>CVC</p>
+        </div>
+      </div>
       </div>
       <div class="pedidos__container">
-        <p class="pedidos__subtitle">Ingresa los datos de tu tarjeta de Débito/Crédito</p>
+        <p class="pedidos__subtitle"><br>
+        <br></p>
         <form [formGroup]="tarjetaForm" class="pedidos-form pedidos-form__resized">
 
           <label for="nombre" class="especial__label"> Nombre y apellido del titular:</label>
           <input type="text" name="nombre" id="nombre" formControlName="nombre"
-            placeholder="Nombre como aparece en la tarjeta" class="pedidos-form__input especial__input" />
+            placeholder="Nombre como aparece en la tarjeta" class="pedidos-form__input especial__input" 
+            (mousedown)="flipped=false"/>
 
 
           <div class="pedidos-form__con-label">
             <label for="numeroTarjeta"> Número de tarjeta:</label>
             <input type="number" name="numeroTarjeta" id="numeroTarjeta" formControlName="numero"
-              placeholder="0000 0000 0000 0000" class="pedidos-form__input" />
+              placeholder="0000 0000 0000 0000" class="pedidos-form__input"
+              (mousedown)="flipped=false" />
           </div>
           <div class="pedidos-form__con-label">
             <label for="fechaVencimiento"> Fecha de vencimiento:</label>
             <input type="month" name="fechaVencimiento" id="fechaVencimiento" formControlName="vencimiento"
-              class="pedidos-form__input" />
+              class="pedidos-form__input" (mousedown)="flipped=false"/>
           </div>
           <div class="pedidos-form__con-label">
             <label for="codigo"> Código de seguridad:</label>
-            <input type="number" name="codigo" id="codigo" formControlName="codigo" placeholder="CVC"
+            <input type="number" (mousedown)="flipped=true" name="codigo" id="codigo" formControlName="codigo" placeholder="CVC"
               class="pedidos-form__input" />
           </div>
         </form>
