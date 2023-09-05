@@ -125,7 +125,32 @@ header {
         width: 90%;
         text-align: center;
     }
+    &__confirmacion{
+        &__container{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            background-color: $color-barbie;
+            width: 90%;
+            margin-top: 1rem;
+            color: #fff;
+            padding: 1rem;
+            border-radius: 15px;
+            hr{
+                margin-top: 0.3rem;
+                margin-bottom: 0.5rem;
+                width: 100%;
+                border: #5a6a6e9a 1px solid;
+            }
+        }
+        &__title{
+            font-size: 1.1rem;
+            font-weight: 800;
+        }
 
+
+    }
     &-tipo {
         display: flex;
         justify-content: space-between;
@@ -274,10 +299,8 @@ header {
 
         &__input {
             width: 100%;
-            margin-top: 1rem;
             border-radius: 15px;
             border: none;
-            flex: 5;
             padding: 1rem;
             font-size: 1.2rem;
             background-color: $color-blanco;
@@ -293,10 +316,11 @@ header {
             display: flex;
             align-items: center;
             justify-content: flex-start;
-
+            margin-top: 1rem;
             label {
                 font-size: 1.2rem;
                 margin-right: 0.5rem;
+
             }
         }
     }
@@ -369,7 +393,7 @@ header {
         height: 150px;
         position: relative;
     }
-
+   
     &__front {
         width: 300px;
         height: 150px;
@@ -379,10 +403,21 @@ header {
         -moz-backface-visibility: hidden;
         -o-backface-visibility: hidden;
         backface-visibility: hidden;
-
+        background: linear-gradient(#007090 , #01a7c2);
         position: absolute;
         top: 0;
         left: 0;
+
+        &-info {
+            display: flex;
+            justify-content: center;
+            margin-top: 40px;
+        }
+
+        &-otra-info {
+            margin-left: 20px;
+            margin-top: 25px;
+        }
     }
 
     &__back {
@@ -396,11 +431,31 @@ header {
         backface-visibility: hidden;
         -webkit-transform: rotateY(180deg);
         -moz-transform: rotateY(180deg);
-      -o-transform: rotateY(180deg);
+        -o-transform: rotateY(180deg);
         transform: rotateY(180deg);
         position: absolute;
         top: 0;
         left: 0;
+
+        background: linear-gradient(#007090 , #01a7c2);
+        &-banda {
+            margin-top: 25px;
+            height: 30px;
+            background-color: #BEBEBE;
+            background: linear-gradient(to right, #BEBEBE 70%, #fffcfc);
+            width: 100%;
+        }
+
+        &-cvc__container {
+            margin-top: 10px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        p {
+            transform: translateX(30%);
+        }
     }
 
 }
@@ -410,4 +465,15 @@ header {
     -moz-transform: rotateY(180deg);
     -o-transform: rotateY(180deg);
     transform: rotateY(180deg);
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }

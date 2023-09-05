@@ -242,29 +242,31 @@
         <p class="pedidos__subtitle">El total a abonar es: ${{TotalPago()}}</p>
         <form [formGroup]="efectivoForm">
           <div class="pedidos-form__con-label">
-            <label for="monto"
-             >
+            <label for="monto">
               Monto:</label>
             <input type="number" name="monto" id="monto" formControlName="monto"
-              placeholder="Monto con el que va a pagar" class="pedidos-form__input"  [ngClass]="{error: TieneErrores(efectivoForm, 'monto') || ( (efectivoForm.controls['monto'].touched || submited) && +efectivoForm.controls['monto'].value! < TotalPago())}" />
+              placeholder="Monto con el que va a pagar" class="pedidos-form__input"
+              [ngClass]="{error: TieneErrores(efectivoForm, 'monto') || ( (efectivoForm.controls['monto'].touched || submited) && +efectivoForm.controls['monto'].value! < TotalPago())}" />
           </div>
 
           <p class="error__label" *ngIf=" Error(efectivoForm, 'monto', 'required')">
             Este campo es requerido</p>
-          <p class=" error__label" *ngIf="( (efectivoForm.controls['monto'].touched || submited) && +efectivoForm.controls['monto'].value! < TotalPago())">
+          <p class=" error__label"
+            *ngIf="( (efectivoForm.controls['monto'].touched || submited) && +efectivoForm.controls['monto'].value! < TotalPago())">
             El monto debe ser mayor o igual al total a pagar</p>
           <p class=" error__label" *ngIf=" Error(efectivoForm, 'monto', 'pattern')">
             No debe exceder el limite de caracteres </p>
           <p *ngIf="+efectivoForm.controls['monto'].value! > TotalPago()">
             Su vuelto es de: ${{+efectivoForm.controls['monto'].value! - TotalPago()}}
           </p>
-          </form>
+        </form>
 
         <div class="pedidos__buttons">
           <button class="pedidos__button pedidos__button-volver" (click)="CambiarVista(this.vistaActual -1)">
             Atrás</button>
           <button class="pedidos__button"
-            (click)="this.efectivoForm.invalid || +efectivoForm.controls['monto'].value! < TotalPago()? submited=true:CambiarVista(this.vistaActual+1)"> Continuar</button>
+            (click)="this.efectivoForm.invalid || +efectivoForm.controls['monto'].value! < TotalPago()? submited=true:CambiarVista(this.vistaActual+1)">
+            Continuar</button>
         </div>
       </div>
     </article>
@@ -276,41 +278,68 @@
       </div> -->
       <div class="tarjeta">
         <div class="tarjeta__flipper" [ngClass]="{flipped: flipped}" (mousedown)="flipped=!flipped">
-        <div class="tarjeta__front">
-          <h1 class="tarjeta__title">Tarjeta</h1>
+          <div class="tarjeta__front">
+            <div class="tarjeta__front-info">
+              <p>{{NumeroTarjeta(this.tarjetaForm.controls["numero"].value!)}}</p>
+            </div>
+            <div class="tarjeta__front-otra-info">
+              <p> Vencimiento: {{Vencimiento()}}</p>
+              <p> {{tarjetaForm.controls['nombre'].value == ''? 'Nombre y Apellido':
+                tarjetaForm.controls['nombre'].value}}</p>
+            </div>
           </div>
-        <div class="tarjeta__back">
-          <p>CVC</p>
+          <div class="tarjeta__back">
+            <div class="tarjeta__back-banda">
+            </div>
+            <div class="tarjeta__back-cvc__container">
+              <p> CVC: {{tarjetaForm.controls['codigo'].value ==''? '---': tarjetaForm.controls['codigo'].value }}</p>
+            </div>
+          </div>
         </div>
-      </div>
       </div>
       <div class="pedidos__container">
         <p class="pedidos__subtitle"><br>
-        <br></p>
+          <br>
+        </p>
         <form [formGroup]="tarjetaForm" class="pedidos-form pedidos-form__resized">
 
           <label for="nombre" class="especial__label"> Nombre y apellido del titular:</label>
           <input type="text" name="nombre" id="nombre" formControlName="nombre"
-            placeholder="Nombre como aparece en la tarjeta" class="pedidos-form__input especial__input" 
-            (mousedown)="flipped=false"/>
-
-
+            placeholder="Nombre como aparece en la tarjeta" class="pedidos-form__input especial__input"
+            (mouseup)="flipped=false" [ngClass]="{error: TieneErrores(tarjetaForm, 'nombre')}" />
+          <p class="error__label" *ngIf=" Error(tarjetaForm, 'nombre', 'required')">
+            Este campo es requerido</p>
+          <p class=" error__label" *ngIf=" Error(tarjetaForm, 'nombre', 'maxlength')">
+            No debe exceder el limite de caracteres </p>
           <div class="pedidos-form__con-label">
             <label for="numeroTarjeta"> Número de tarjeta:</label>
             <input type="number" name="numeroTarjeta" id="numeroTarjeta" formControlName="numero"
-              placeholder="0000 0000 0000 0000" class="pedidos-form__input"
-              (mousedown)="flipped=false" />
+              placeholder="XXXX XXXX XXXX XXXX" class="pedidos-form__input" (mouseup)="flipped=false"
+              [ngClass]="{error: TieneErrores(tarjetaForm, 'numero')}" />
+
           </div>
+          <p class="error__label" *ngIf=" Error(tarjetaForm, 'numero', 'required')">
+            Este campo es requerido</p>
+          <p class=" error__label" *ngIf=" Error(tarjetaForm, 'numero', 'pattern')">
+            Debe tener exactamente 16 Caracteres </p>
           <div class="pedidos-form__con-label">
             <label for="fechaVencimiento"> Fecha de vencimiento:</label>
             <input type="month" name="fechaVencimiento" id="fechaVencimiento" formControlName="vencimiento"
-              class="pedidos-form__input" (mousedown)="flipped=false"/>
+              class="pedidos-form__input" (mouseup)="flipped=false"
+              [ngClass]="{error: TieneErrores(tarjetaForm, 'vencimiento')}" />
           </div>
+          <p class="error__label" *ngIf=" Error(tarjetaForm, 'vencimiento', 'required')">
+            Este campo es requerido</p>
+
           <div class="pedidos-form__con-label">
             <label for="codigo"> Código de seguridad:</label>
-            <input type="number" (mousedown)="flipped=true" name="codigo" id="codigo" formControlName="codigo" placeholder="CVC"
-              class="pedidos-form__input" />
+            <input type="number" (mouseup)="flipped=true" name="codigo" id="codigo" formControlName="codigo"
+              placeholder="CVC" class="pedidos-form__input" [ngClass]="{error: TieneErrores(tarjetaForm, 'codigo')}" />
           </div>
+          <p class="error__label" *ngIf=" Error(tarjetaForm, 'codigo', 'required')">
+            Este campo es requerido</p>
+          <p class=" error__label" *ngIf=" Error(tarjetaForm, 'codigo', 'pattern')">
+            Debe tener exactamente 3 Caracteres </p>
         </form>
         <div class="pedidos__buttons">
           <button class="pedidos__button pedidos__button-volver" (click)="CambiarVista(this.vistaActual -1)">
@@ -328,30 +357,47 @@
       </div>
       <div class="pedidos__container">
         <p class="pedidos__subtitle">Verifica que todo este en orden</p>
-        <p class="pedidos__subtitle">Productos Pedidos:</p>
-        <p class="pedidos__subtitle">{{pedidoForm.controls["objetos"].value}} </p>
-        <p class="pedidos__subtitle">Dirección del local:</p>
-        <p class="pedidos__subtitle">Calle: {{localForm.controls["calle"].value}} Número:
-          {{localForm.controls["numero"].value}} Ciudad: {{localForm.controls["ciudad"].value}} Referencias:
-          {{localForm.controls["referencia"].value}}</p>
-        <p class="pedidos__subtitle">Dirección de entrega:</p>
-        <p class="pedidos__subtitle">Calle: {{lugarEntregaForm.controls["calle"].value}} Número:
-          {{lugarEntregaForm.controls["numero"].value}} Ciudad: {{lugarEntregaForm.controls["ciudad"].value}}
-          Referencias:
-          {{lugarEntregaForm.controls["referencia"].value}}</p>
-        <p class="pedidos__subtitle" *ngif="lugarEntregaForm.controls['entrega'].value == 'lo-antes-posible'">Entrega lo
-          antes posible</p>
-        <p class="pedidos__subtitle" *ngif="lugarEntregaForm.controls['entrega'].value == 'programar-entrega'">Fecha de
-          entrega: {{lugarEntregaForm.controls["fecha"].value}} Hora de entrega:
-          {{lugarEntregaForm.controls["hora"].value}}</p>
-        <p class="pedidos__subtitle">Total a pagar: ${{TotalPago()}}</p>
-        <p class="pedidos__subtitle">Método de pago: {{this.metodoPago}}</p>
-        <p class="pedidos__subtitle" *ngIf="this.metodoPago=='Efectivo'">Monto a pagar en efectivo:
-          {{efectivoForm.controls["monto"].value}}</p>
-        <p class="pedidos__subtitle" *ngIf="this.metodoPago=='Tarjeta'">Nombre: {{tarjetaForm.controls["nombre"].value}}
-          Número: {{tarjetaForm.controls["numero"].value}} Fecha de vencimiento:
-          {{tarjetaForm.controls["vencimiento"].value}} Código de seguridad: {{tarjetaForm.controls["codigo"].value}}
-        </p>
+        <div class="pedidos__confirmacion__container">
+          <p class="pedidos__subtitle pedidos__confirmacion__title">Productos Pedidos</p>
+          <hr>
+          <p class="pedidos__subtitle">{{pedidoForm.controls["objetos"].value}} </p>
+        </div>
+        <div class="pedidos__confirmacion__container">
+          <p class="pedidos__subtitle pedidos__confirmacion__title">Dirección del local</p>
+          <hr>
+          <p class="pedidos__subtitle">Calle: {{localForm.controls["calle"].value}} Número:
+            {{localForm.controls["numero"].value}} Ciudad: {{localForm.controls["ciudad"].value}} Referencias:
+            {{localForm.controls["referencia"].value}}</p>
+        </div>
+        <div class="pedidos__confirmacion__container">
+          <p class="pedidos__subtitle pedidos__confirmacion__title">Dirección de entrega</p>
+          <hr>
+          <p class="pedidos__subtitle">Calle: {{lugarEntregaForm.controls["calle"].value}} Número:
+            {{lugarEntregaForm.controls["numero"].value}} Ciudad: {{lugarEntregaForm.controls["ciudad"].value}}
+            Referencias:
+            {{lugarEntregaForm.controls["referencia"].value}}</p>
+          <p class="pedidos__subtitle" *ngif="lugarEntregaForm.controls['entrega'].value == 'lo-antes-posible'">Entrega
+            lo
+            antes posible</p>
+          <p class="pedidos__subtitle" *ngif="lugarEntregaForm.controls['entrega'].value == 'programar-entrega'">Fecha
+            de
+            entrega: {{lugarEntregaForm.controls["fecha"].value}} Hora de entrega:
+            {{lugarEntregaForm.controls["hora"].value}}</p>
+        </div>
+        <div class="pedidos__confirmacion__container ">
+
+          <p class="pedidos__subtitle pedidos__confirmacion__title">Pago</p>
+          <hr>
+          <p class="pedidos__subtitle">Total a pagar: ${{TotalPago()}}</p>
+          <p class="pedidos__subtitle">Método de pago: {{this.metodoPago}}</p>
+          <p class="pedidos__subtitle" *ngIf="this.metodoPago=='Efectivo'">Monto a pagar en efectivo:
+            {{efectivoForm.controls["monto"].value}}</p>
+          <p class="pedidos__subtitle" *ngIf="this.metodoPago=='Tarjeta'">Nombre:
+            {{tarjetaForm.controls["nombre"].value}}
+            Número: {{tarjetaForm.controls["numero"].value}} Fecha de vencimiento:
+            {{tarjetaForm.controls["vencimiento"].value}} Código de seguridad: {{tarjetaForm.controls["codigo"].value}}
+          </p>
+        </div>
         <div class="pedidos__buttons">
           <button class="pedidos__button pedidos__button-volver" (click)="CambiarVista(this.vistaActual -1)">
             Atrás</button>

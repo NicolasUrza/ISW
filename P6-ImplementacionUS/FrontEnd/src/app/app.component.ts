@@ -37,10 +37,10 @@ export class AppComponent {
     hora: new FormControl('', [])
   });
   tarjetaForm = new FormGroup({
-    nombre: new FormControl('', [Validators.required, Validators.maxLength(120)]),
-    numero: new FormControl('', [Validators.required, Validators.pattern('[0-9]{1,7}')]),
+    nombre: new FormControl('', [Validators.required, Validators.maxLength(40)]),
+    numero: new FormControl('', [Validators.required, Validators.pattern('[0-9]{16,16}')]),
     vencimiento: new FormControl('', [Validators.required, Validators.maxLength(120)]),
-    codigo: new FormControl('', [Validators.required, Validators.pattern('[0-9]{1,3}')]),
+    codigo: new FormControl('', [Validators.required, Validators.pattern('[0-9]{3,3}')]),
   });
 
   efectivoForm = new FormGroup({
@@ -86,6 +86,7 @@ export class AppComponent {
     this.CambiarVista(5);
   }
   TieneErrores(form: FormGroup, control: string) {
+    console.log(control)
     return form.controls[control].invalid && (form.controls[control].dirty || form.controls[control].touched || this.submited);
   }
 
@@ -104,5 +105,28 @@ export class AppComponent {
     this.lugarEntregaForm.controls["fecha"].updateValueAndValidity();
     this.lugarEntregaForm.controls["hora"].setValidators([Validators.required]);
     this.lugarEntregaForm.controls["hora"].updateValueAndValidity();
+  }
+  NumeroTarjeta(numeroIngresado:string){
+    let numero:string = "";
+    for(let i= 0 ; i<16; i++ ){
+      if(i%4==0 && i !== 0){
+        numero += " ";
+      }
+      if(numeroIngresado.toString().length>i){
+        numero += numeroIngresado.toString()[i].toString();
+      }
+      else{
+        numero += "X";
+      }
+      
+    }
+    return numero;
+  }
+
+  Vencimiento(){
+    let vencimiento = this.tarjetaForm.controls["vencimiento"].value;
+    let mes = vencimiento!.substring(0,2);
+    let anio = vencimiento!.substring(2,4);
+    return mes+"/"+anio;
   }
 }
