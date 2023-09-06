@@ -1,5 +1,5 @@
 <header>
-  <img alt="Deliver Eat logo" src="assets/Icon.png"  (mouseup)="CambiarVista(0)"/>
+  <img alt="Deliver Eat logo" src="assets/Icon.png" (mouseup)="CambiarVista(0)" />
   <span>Bienvenido</span>
 
 </header>
@@ -281,19 +281,20 @@
     <!--Tarjeta-->
     <article class="pedidos" [ngClass]="{'salida-izquierda': salidaIzquierda}"
       *ngIf="vistaActual==5 && this.metodoPago=='Tarjeta'">
-      <!-- <div class="pedidos__header">
-        <h1 class="pedidos__title">Tarjeta</h1>
-      </div> -->
       <div class="tarjeta">
         <div class="tarjeta__flipper" [ngClass]="{flipped: flipped}" (mousedown)="flipped=!flipped">
           <div class="tarjeta__front">
             <div class="tarjeta__front-info">
-              <p>{{NumeroTarjeta(this.tarjetaForm.controls["numero"].value!)}}</p>
+              <p style="white-space: pre;">{{NumeroTarjeta(this.tarjetaForm.controls["numero"].value!)}}</p>
             </div>
             <div class="tarjeta__front-otra-info">
               <p> Vencimiento: {{Vencimiento()}}</p>
               <p> {{tarjetaForm.controls['nombre'].value == ''? 'Nombre y Apellido':
                 tarjetaForm.controls['nombre'].value}}</p>
+            </div>
+            <div class="tarjeta__front-logo">
+              <img alt="Visa" src="assets/visa.png" *ngIf="Visa()" />
+              <img alt="Mastercard" src="assets/mastercard.png" *ngIf="MasterCard()" />
             </div>
           </div>
           <div class="tarjeta__back">
@@ -303,6 +304,7 @@
               <p> CVC: {{tarjetaForm.controls['codigo'].value ==''? '---': tarjetaForm.controls['codigo'].value }}</p>
             </div>
           </div>
+
         </div>
       </div>
       <div class="pedidos__container">
@@ -322,7 +324,7 @@
           <div class="pedidos-form__con-label">
             <label for="numeroTarjeta"> Número de tarjeta:</label>
             <input type="number" name="numeroTarjeta" id="numeroTarjeta" formControlName="numero"
-              placeholder="XXXX XXXX XXXX XXXX" class="pedidos-form__input" (mouseup)="flipped=false"
+              placeholder="XXXX XXXX XXXX XXXX" class="pedidos-form__input" (mouseup)="flipped=false" maxlength="16"
               [ngClass]="{error: TieneErrores(tarjetaForm, 'numero')}" />
 
           </div>
@@ -330,6 +332,8 @@
             Este campo es requerido</p>
           <p class=" error__label" *ngIf=" Error(tarjetaForm, 'numero', 'pattern')">
             Debe tener exactamente 16 Caracteres </p>
+          <p class=" error__label" *ngIf=" Error(tarjetaForm, 'numero', 'isvisa')">
+            Solo aceptamos tarjeta Visa </p>
           <div class="pedidos-form__con-label">
             <label for="fechaVencimiento"> Fecha de vencimiento:</label>
             <input type="month" name="fechaVencimiento" id="fechaVencimiento" formControlName="vencimiento"
@@ -342,7 +346,8 @@
           <div class="pedidos-form__con-label">
             <label for="codigo"> Código de seguridad:</label>
             <input type="number" (mouseup)="flipped=true" name="codigo" id="codigo" formControlName="codigo"
-              placeholder="CVC" class="pedidos-form__input" [ngClass]="{error: TieneErrores(tarjetaForm, 'codigo')}" />
+              placeholder="CVC" class="pedidos-form__input" maxlength="3"
+              [ngClass]="{error: TieneErrores(tarjetaForm, 'codigo')}" />
           </div>
           <p class="error__label" *ngIf=" Error(tarjetaForm, 'codigo', 'required')">
             Este campo es requerido</p>
@@ -403,11 +408,9 @@
           <p class="pedidos__subtitle">Método de pago: {{this.metodoPago}}</p>
           <p class="pedidos__subtitle" *ngIf="this.metodoPago=='Efectivo'">Monto a pagar en efectivo:
             ${{efectivoForm.controls["monto"].value}}</p>
-          <p class="pedidos__subtitle" *ngIf="this.metodoPago=='Tarjeta'">Nombre:
-            {{tarjetaForm.controls["nombre"].value}}
-            Número: {{tarjetaForm.controls["numero"].value}} Fecha de vencimiento:
-            {{tarjetaForm.controls["vencimiento"].value}} Código de seguridad: {{tarjetaForm.controls["codigo"].value}}
-          </p>
+          <p class="pedidos__subtitle" *ngIf="this.metodoPago=='Tarjeta'">
+            Tarjeta terminada en {{tarjetaForm.controls["numero"].value!.toString().slice(12,16)}}</p>
+
 
         </div>
         <div class="pedidos__buttons">
@@ -456,7 +459,7 @@
       4
     </p>
     <p class="step__subtitle">
-      Metodo
+      Método 
     </p>
   </div>
   <div class="step" (mouseup)="HastaCompletado()>= 5&& vistaActual!=5? CambiarVista(5): ''"

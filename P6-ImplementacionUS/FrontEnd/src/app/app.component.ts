@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, HostListener } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
@@ -65,7 +65,7 @@ export class AppComponent {
   });
   tarjetaForm = new FormGroup({
     nombre: new FormControl('', [Validators.required, Validators.maxLength(40)]),
-    numero: new FormControl('', [Validators.required, Validators.pattern('[0-9]{16,16}')]),
+    numero: new FormControl('', [Validators.required, Validators.pattern('[0-9]{16,16}'), this.isVisa()]),
     vencimiento: new FormControl('', [Validators.required, Validators.maxLength(120)]),
     codigo: new FormControl('', [Validators.required, Validators.pattern('[0-9]{3,3}')]),
   });
@@ -163,4 +163,33 @@ export class AppComponent {
     let anio = vencimiento!.substring(2,4);
     return mes+"/"+anio;
   }
+
+  Visa(){
+    return this.tarjetaForm.controls["numero"].value!.toString()[0]=="4";
+  }
+  MasterCard(){
+    return this.tarjetaForm.controls["numero"].value!.toString()[0]=="5";
+  }
+
+  isVisa(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      return this.isVisaCard(control.value.toString()) ? null : { isvisa: { value: control.value } };
+    };}
+
+    isVisaCard(cardNumber: string): boolean {
+      if (cardNumber) {
+        // que empieze con 4
+        if (cardNumber.length ==0) {
+          return false;
+        }
+        
+        if (cardNumber[0] !== '4') {
+          return false;
+        }
+        else{
+          return true;
+        }
+      }
+      return false;
+    }
 }
