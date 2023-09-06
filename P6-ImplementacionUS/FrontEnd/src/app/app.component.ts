@@ -17,6 +17,33 @@ export class AppComponent {
   imagenSubida = "";
   submited = false;
   flipped=false;
+  footer=false;
+  hastaCompletado=0;
+
+  HastaCompletado(){
+    let hastaCompletado = 0;
+    if(this.pedidoForm.invalid && this.hastaCompletado>= 1){
+      hastaCompletado=1;
+    }
+    else if(this.localForm.invalid && this.hastaCompletado>= 2){
+      hastaCompletado=2;
+    }
+    else if(this.lugarEntregaForm.invalid && this.hastaCompletado>= 3){
+      hastaCompletado=3;
+    }else if((this.metodoPago=="Tarjeta" && this.tarjetaForm.invalid || this.metodoPago=="Efectivo" && this.efectivoForm.invalid) && this.hastaCompletado>= 5){
+      hastaCompletado=5;
+    }
+    else if((this.metodoPago=="Tarjeta" && this.tarjetaForm.invalid || this.metodoPago=="Efectivo" && this.efectivoForm.invalid) && this.hastaCompletado>= 4){
+      hastaCompletado=4;
+    }
+    else if(this.hastaCompletado> this.vistaActual){
+      hastaCompletado=this.hastaCompletado;
+    }
+    else{
+      hastaCompletado=this.vistaActual;
+    }
+    return hastaCompletado;
+  }
   pedidoForm = new FormGroup({
     objetos: new FormControl('', [Validators.required, Validators.maxLength(1200)]),
     imagen: new FormControl('')
@@ -63,6 +90,9 @@ export class AppComponent {
   CambiarVista(vista: number) {
     this.salidaIzquierda = true;
     this.submited = false;
+    if(vista> this.hastaCompletado){
+      this.hastaCompletado = vista;
+    }
     if (this.pedidoForm.controls["imagen"].value != '') {
       this.imagenSubida = this.pedidoForm.controls["imagen"].value!;
       this.pedidoForm.controls["imagen"].setValue('');
@@ -70,6 +100,7 @@ export class AppComponent {
     setTimeout(() => {
       this.salidaIzquierda = false;
       this.vistaActual = vista;
+     
     }, 500);
 
   }
@@ -77,7 +108,10 @@ export class AppComponent {
     return this.pedidoForm.controls["imagen"].value != '' || this.imagenSubida != '';
   }
   constructor() { }
-
+  EliminarImagen() {
+    this.imagenSubida = '';
+    this.pedidoForm.controls["imagen"].setValue('');
+  }
   TotalPago() {
     return 1000;
   }
@@ -110,7 +144,7 @@ export class AppComponent {
     let numero:string = "";
     for(let i= 0 ; i<16; i++ ){
       if(i%4==0 && i !== 0){
-        numero += " ";
+        numero += "  ";
       }
       if(numeroIngresado.toString().length>i){
         numero += numeroIngresado.toString()[i].toString();

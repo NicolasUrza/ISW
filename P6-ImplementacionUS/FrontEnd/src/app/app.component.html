@@ -1,6 +1,5 @@
-<!-- Toolbar -->
 <header>
-  <img alt="Deliver Eat logo" src="assets/Icon.png" />
+  <img alt="Deliver Eat logo" src="assets/Icon.png"  (mouseup)="CambiarVista(0)"/>
   <span>Bienvenido</span>
 
 </header>
@@ -15,11 +14,15 @@
         <p class="pedidos__subtitle">Pide lo que quieras y recíbelo en la comodidad de tu hogar</p>
         <div class="pedidos-tipo">
           <div class="pedidos-tipo__container">
-            <img class="pedidos-tipo__imagen" alt="Restaurante" src="assets/restaurant.png" />
+            <div class="pedidos-tipo__imagen">
+              <img alt="Restaurante" src="assets/restaurant.png" />
+            </div>
             <h2 class="pedidos-tipo__title">Pedir a comercio</h2>
           </div>
           <div class="pedidos-tipo__container" (click)="CambiarVista(1)">
-            <img class="pedidos-tipo__imagen" alt="lo que sea" src="assets/lo-que-sea.png" />
+            <div class="pedidos-tipo__imagen">
+              <img alt="lo que sea" src="assets/lo-que-sea.png" />
+            </div>
             <h2 class="pedidos-tipo__title">Pedir lo que sea</h2>
           </div>
         </div>
@@ -54,6 +57,7 @@
             <img src="assets/img-picker.png">
             <span class="iborrainputfile" *ngIf="!ExisteImagen()">Puedes incluir una imagen si prefieres</span>
             <span class="iborrainputfile" *ngIf="ExisteImagen()">Imagen cargada</span>
+            <p (mouseup)="EliminarImagen()" *ngIf="ExisteImagen()">X Eliminar </p>
           </label>
         </form>
         <div class="pedidos__buttons">
@@ -217,11 +221,15 @@
         <p class="pedidos__subtitle">Elige tu forma de pago: </p>
         <div class="pedidos-tipo">
           <div class="pedidos-tipo__container" (click)="MetodoDePago('Efectivo')">
-            <img class="pedidos-tipo__imagen" alt="Restaurante" src="assets/efectivo.png" />
+            <div class="pedidos-tipo__imagen">
+              <img alt="Restaurante" src="assets/efectivo.png" />
+            </div>
             <h2 class="pedidos-tipo__title">Efectivo</h2>
           </div>
           <div class="pedidos-tipo__container" (click)="MetodoDePago('Tarjeta')">
-            <img class="pedidos-tipo__imagen" alt="lo que sea" src="assets/tarjeta.png" />
+            <div class="pedidos-tipo__imagen">
+              <img alt="lo que sea" src="assets/tarjeta.png" />
+            </div>
             <h2 class="pedidos-tipo__title">Débito/Crédito</h2>
           </div>
         </div>
@@ -365,20 +373,23 @@
         <div class="pedidos__confirmacion__container">
           <p class="pedidos__subtitle pedidos__confirmacion__title">Dirección del local</p>
           <hr>
-          <p class="pedidos__subtitle">Calle: {{localForm.controls["calle"].value}} Número:
-            {{localForm.controls["numero"].value}} Ciudad: {{localForm.controls["ciudad"].value}} Referencias:
-            {{localForm.controls["referencia"].value}}</p>
+          <p class="pedidos__subtitle"> Calle: {{localForm.controls["calle"].value}}
+          <p class="pedidos__subtitle"> Número: {{localForm.controls["numero"].value}} </p>
+          <p class="pedidos__subtitle"> Ciudad: {{localForm.controls["ciudad"].value}} </p>
+          <p class="pedidos__subtitle"> Referencias:
+            {{localForm.controls["referencia"].value? localForm.controls["referencia"].value: "-"}}</p>
         </div>
         <div class="pedidos__confirmacion__container">
           <p class="pedidos__subtitle pedidos__confirmacion__title">Dirección de entrega</p>
           <hr>
-          <p class="pedidos__subtitle">Calle: {{lugarEntregaForm.controls["calle"].value}} Número:
-            {{lugarEntregaForm.controls["numero"].value}} Ciudad: {{lugarEntregaForm.controls["ciudad"].value}}
-            Referencias:
-            {{lugarEntregaForm.controls["referencia"].value}}</p>
+          <p class="pedidos__subtitle">Calle: {{lugarEntregaForm.controls["calle"].value}}
+          </p>
+          <p class="pedidos__subtitle">Número: {{lugarEntregaForm.controls["numero"].value}}</p>
+          <p class="pedidos__subtitle"> Ciudad: {{lugarEntregaForm.controls["ciudad"].value}}</p>
+          <p class="pedidos__subtitle">Referencias:
+            {{lugarEntregaForm.controls["referencia"].value? lugarEntregaForm.controls["referencia"].value:"-"}}</p>
           <p class="pedidos__subtitle" *ngif="lugarEntregaForm.controls['entrega'].value == 'lo-antes-posible'">Entrega
-            lo
-            antes posible</p>
+            lo antes posible</p>
           <p class="pedidos__subtitle" *ngif="lugarEntregaForm.controls['entrega'].value == 'programar-entrega'">Fecha
             de
             entrega: {{lugarEntregaForm.controls["fecha"].value}} Hora de entrega:
@@ -391,12 +402,13 @@
           <p class="pedidos__subtitle">Total a pagar: ${{TotalPago()}}</p>
           <p class="pedidos__subtitle">Método de pago: {{this.metodoPago}}</p>
           <p class="pedidos__subtitle" *ngIf="this.metodoPago=='Efectivo'">Monto a pagar en efectivo:
-            {{efectivoForm.controls["monto"].value}}</p>
+            ${{efectivoForm.controls["monto"].value}}</p>
           <p class="pedidos__subtitle" *ngIf="this.metodoPago=='Tarjeta'">Nombre:
             {{tarjetaForm.controls["nombre"].value}}
             Número: {{tarjetaForm.controls["numero"].value}} Fecha de vencimiento:
             {{tarjetaForm.controls["vencimiento"].value}} Código de seguridad: {{tarjetaForm.controls["codigo"].value}}
           </p>
+
         </div>
         <div class="pedidos__buttons">
           <button class="pedidos__button pedidos__button-volver" (click)="CambiarVista(this.vistaActual -1)">
@@ -406,5 +418,63 @@
       </div>
     </article>
   </section>
+  <div class="anti-sticky">
 
+  </div>
 </main>
+<footer *ngIf="vistaActual!=0">
+  <div class="step" (mouseup)="HastaCompletado()>= 1&& vistaActual!=1? CambiarVista(1): ''"
+    [ngClass]="{'step__active': vistaActual==1, 'step__movible': HastaCompletado()>= 1}">
+    <p class="step__title">
+      1
+    </p>
+    <p class="step__subtitle">
+      Pedido
+    </p>
+  </div>
+  <div class="step" (mouseup)="HastaCompletado()>= 2&& vistaActual!=2? CambiarVista(2): ''"
+    [ngClass]="{'step__active': vistaActual==2, 'step__movible': HastaCompletado()>= 2}">
+    <p class="step__title">
+      2
+    </p>
+    <p class="step__subtitle">
+      Local
+    </p>
+  </div>
+  <div class="step" (mouseup)="HastaCompletado()>= 3&& vistaActual!=3? CambiarVista(3): ''"
+    [ngClass]="{'step__active': vistaActual==3, 'step__movible': HastaCompletado()>= 3}">
+    <p class="step__title">
+      3
+    </p>
+    <p class="step__subtitle">
+      Entrega
+    </p>
+  </div>
+  <div class="step" (mouseup)="HastaCompletado()>= 4&& vistaActual!=4? CambiarVista(4): ''"
+    [ngClass]="{'step__active': vistaActual==4, 'step__movible': HastaCompletado()>= 4}">
+    <p class="step__title">
+      4
+    </p>
+    <p class="step__subtitle">
+      Metodo
+    </p>
+  </div>
+  <div class="step" (mouseup)="HastaCompletado()>= 5&& vistaActual!=5? CambiarVista(5): ''"
+    [ngClass]="{'step__active': vistaActual==5, 'step__movible': HastaCompletado()>= 5}">
+    <p class="step__title">
+      5
+    </p>
+    <p class="step__subtitle">
+      Pago
+    </p>
+  </div>
+  <div class="step" (mouseup)="HastaCompletado()>= 6 && vistaActual!=6? CambiarVista(6): ''"
+    [ngClass]="{'step__active': vistaActual==6, 'step__movible': HastaCompletado()>= 6}">
+    <p class="step__title">
+      6
+    </p>
+    <p class="step__subtitle">
+      Confirmar
+    </p>
+  </div>
+</footer>
