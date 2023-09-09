@@ -189,15 +189,15 @@
             *ngIf="lugarEntregaForm.controls['entrega'].value == 'programar-entrega'">
             <label for="fecha" class="pedidos-form__label">Fecha de entrega:</label>
             <input type="date" name="fecha" id="fecha" formControlName="fecha" class="pedidos-form__input"
-              [ngClass]="{error: TieneErrores(lugarEntregaForm, 'fecha')}" />
+              [min]="  ConseguirFechaActual()" [ngClass]="{error: TieneErrores(lugarEntregaForm, 'fecha')}" />
           </div>
           <p class="error__label" *ngIf=" Error(lugarEntregaForm, 'fecha', 'required')">
             Este campo es requerido</p>
           <div class="pedidos-form__con-label"
             *ngIf="lugarEntregaForm.controls['entrega'].value == 'programar-entrega'">
-            <label for="hora" class="pedidos-form__label"
-              [ngClass]="{error: TieneErrores(lugarEntregaForm, 'hora')}">Hora de entrega:</label>
-            <input type="time" name="hora" id="hora" formControlName="hora" class="pedidos-form__input" />
+            <label for="hora" class="pedidos-form__label">Hora de entrega:</label>
+            <input type="time"  name="hora" id="hora" formControlName="hora"
+              class="pedidos-form__input" [ngClass]="{error: TieneErrores(lugarEntregaForm, 'hora')}" />
           </div>
           <p class="error__label" *ngIf=" Error(lugarEntregaForm, 'hora', 'required')">
             Este campo es requerido</p>
@@ -337,7 +337,7 @@
           <div class="pedidos-form__con-label">
             <label for="fechaVencimiento"> Fecha de vencimiento:</label>
             <input type="month" name="fechaVencimiento" id="fechaVencimiento" formControlName="vencimiento"
-              class="pedidos-form__input" (mouseup)="flipped=false"
+              class="pedidos-form__input" [min]="MesyAnioActual()" (mouseup)="flipped=false"
               [ngClass]="{error: TieneErrores(tarjetaForm, 'vencimiento')}" />
           </div>
           <p class="error__label" *ngIf=" Error(tarjetaForm, 'vencimiento', 'required')">
@@ -459,7 +459,7 @@
       4
     </p>
     <p class="step__subtitle">
-      Método 
+      Método
     </p>
   </div>
   <div class="step" (mouseup)="HastaCompletado()>= 5&& vistaActual!=5? CambiarVista(5): ''"
