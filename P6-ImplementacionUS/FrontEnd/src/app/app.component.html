@@ -76,8 +76,9 @@
 
     <!--Descripcion del local-->
     <article class="pedidos" [ngClass]="{'salida-izquierda': salidaIzquierda}" *ngIf="vistaActual==2">
-      <div class="pedidos__header">
-        <h1 class="pedidos__title">Dónde lo buscamos</h1>
+      <div class="pedidos__header-especial">
+        <h1 class="pedidos__title-especial pedidos__title-especial-active pedidos__title-especial-active-left">Dirección del local</h1>
+        <h1 class="pedidos__title-especial ">Direccion de entrega</h1>
       </div>
       <div class="pedidos__container">
         <p class="pedidos__subtitle">Descríbenos la dirección del local donde quieres que busquemos tu producto</p>
@@ -136,11 +137,12 @@
 
     <!--Descripcion del lugar de entrega-->
     <article class="pedidos" [ngClass]="{'salida-izquierda': salidaIzquierda}" *ngIf="vistaActual==3">
-      <div class="pedidos__header">
-        <h1 class="pedidos__title">Dónde lo entregamos</h1>
+      <div class="pedidos__header-especial">
+        <h1 class="pedidos__title-especial ">Dirección del local</h1>
+        <h1 class="pedidos__title-especial pedidos__title-especial-active pedidos__title-especial-active-right">Direccion de entrega</h1>
       </div>
       <div class="pedidos__container">
-        <p class="pedidos__subtitle">Descríbenos la dirección del entrega</p>
+        <p class="pedidos__subtitle">Descríbenos la dirección de entrega</p>
         <form [formGroup]="lugarEntregaForm" class="pedidos-form pedidos-form__resized">
           <div class="pedidos-form__con-label">
             <label for="calle"> Calle:</label>
