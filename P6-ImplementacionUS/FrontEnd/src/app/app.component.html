@@ -1,11 +1,16 @@
+<app-spinner [loading]="loading" [confirmado]="confirmado" (VolverAInicio)="Terminar($event)"></app-spinner>
+
+
 <header>
   <img alt="Deliver Eat logo" src="assets/Icon.png" (mouseup)="CambiarVista(0)" />
   <span>Bienvenido</span>
 
 </header>
 <main>
+
   <section>
     <!--Seleccion del tipo de pedido-->
+
     <article class="pedidos" [ngClass]="{'salida-izquierda': salidaIzquierda}" *ngIf="vistaActual==0">
       <div class="pedidos__header">
         <h1 class="pedidos__title">Pedidos</h1>
@@ -113,7 +118,7 @@
           <div class="pedidos-form__con-label">
             <label for="referencia"> Referencia:</label>
             <input type="text" name="referencia" id="referencia" formControlName="referencia"
-              placeholder="Referencias del lugar..." class="pedidos-form__input"
+              placeholder="Depto, piso, etc" class="pedidos-form__input"
               [ngClass]="{error: TieneErrores(localForm, 'referencia')}" />
           </div>
 
@@ -172,7 +177,7 @@
           <div class="pedidos-form__con-label">
             <label for="referencia"> Referencia:</label>
             <input type="text" name="referencia" id="referencia" formControlName="referencia"
-              placeholder="Referencias del lugar..." class="pedidos-form__input"
+              placeholder="Depto, piso, etc" class="pedidos-form__input"
               [ngClass]="{error: TieneErrores(lugarEntregaForm, 'referencia')}" />
           </div>
           <p class=" error__label" *ngIf=" Error(lugarEntregaForm, 'referencia', 'maxlength')">
@@ -196,8 +201,8 @@
           <div class="pedidos-form__con-label"
             *ngIf="lugarEntregaForm.controls['entrega'].value == 'programar-entrega'">
             <label for="hora" class="pedidos-form__label">Hora de entrega:</label>
-            <input type="time"  name="hora" id="hora" formControlName="hora"
-              class="pedidos-form__input" [ngClass]="{error: TieneErrores(lugarEntregaForm, 'hora')}" />
+            <input type="time" name="hora" id="hora" formControlName="hora" class="pedidos-form__input"
+              [ngClass]="{error: TieneErrores(lugarEntregaForm, 'hora')}" />
           </div>
           <p class="error__label" *ngIf=" Error(lugarEntregaForm, 'hora', 'required')">
             Este campo es requerido</p>
@@ -393,9 +398,9 @@
           <p class="pedidos__subtitle"> Ciudad: {{lugarEntregaForm.controls["ciudad"].value}}</p>
           <p class="pedidos__subtitle">Referencias:
             {{lugarEntregaForm.controls["referencia"].value? lugarEntregaForm.controls["referencia"].value:"-"}}</p>
-          <p class="pedidos__subtitle" *ngif="lugarEntregaForm.controls['entrega'].value == 'lo-antes-posible'">Entrega
+          <p class="pedidos__subtitle" *ngIf="lugarEntregaForm.controls['entrega'].value == 'lo-antes-posible'">Entrega
             lo antes posible</p>
-          <p class="pedidos__subtitle" *ngif="lugarEntregaForm.controls['entrega'].value == 'programar-entrega'">Fecha
+          <p class="pedidos__subtitle" *ngIf="lugarEntregaForm.controls['entrega'].value == 'programar-entrega'">Fecha
             de
             entrega: {{lugarEntregaForm.controls["fecha"].value}} Hora de entrega:
             {{lugarEntregaForm.controls["hora"].value}}</p>
@@ -416,7 +421,7 @@
         <div class="pedidos__buttons">
           <button class="pedidos__button pedidos__button-volver" (click)="CambiarVista(this.vistaActual -1)">
             Atrás</button>
-          <button class="pedidos__button"> Confirmar</button>
+          <button class="pedidos__button" (click)="Confirmar()"> Confirmar</button>
         </div>
       </div>
     </article>

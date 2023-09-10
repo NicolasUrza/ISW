@@ -18,6 +18,7 @@ export class AppComponent {
   submited = false;
   flipped = false;
   footer = false;
+  loading = false;
   hastaCompletado = 0;
 
   HastaCompletado() {
@@ -78,7 +79,7 @@ export class AppComponent {
     var dia = fecha.getDate();
     let diaString = dia.toString();
     var mes = fecha.getMonth() + 1;
-    let mesString = mes.toString(); 
+    let mesString = mes.toString();
     var anio = fecha.getFullYear();
     if (dia < 10) {
       diaString = "0" + diaString;
@@ -86,9 +87,8 @@ export class AppComponent {
     }
     if (mes < 10) {
       mesString = "0" + mesString;
-        }
+    }
     let fe = anio + "-" + mesString + "-" + diaString;
-    console.log(fe);
     return fe;
   }
   CambiarVista(vista: number) {
@@ -207,5 +207,58 @@ export class AppComponent {
     }
     return anio + "-" + mesString;
   }
+  confirmado = false;
+  Confirmar() {
+    this.loading = true;
+    setTimeout(() => {
+      this.loading = false;
+      this.confirmado = true;
+    }, 3500);
 
+  }
+
+  Resetear(){
+    this.pedidoForm = new FormGroup({
+      objetos: new FormControl('', [Validators.required, Validators.maxLength(1200)]),
+      imagen: new FormControl('')
+    });
+    this.localForm = new FormGroup({
+      calle: new FormControl('', [Validators.required, Validators.maxLength(120)]),
+      numero: new FormControl('', [Validators.required, Validators.pattern('[0-9]{1,7}')]),
+      ciudad: new FormControl('', [Validators.required, Validators.maxLength(120)]),
+      referencia: new FormControl('', [Validators.maxLength(120)])
+    });
+    this.lugarEntregaForm = new FormGroup({
+      calle: new FormControl('', [Validators.required, Validators.maxLength(120)]),
+      numero: new FormControl('', [Validators.required, Validators.pattern('[0-9]{1,7}')]),
+      ciudad: new FormControl('', [Validators.required, Validators.maxLength(120)]),
+      referencia: new FormControl('', [Validators.maxLength(120)]),
+      entrega: new FormControl('lo-antes-posible', [Validators.maxLength(120)]),
+      fecha: new FormControl(this.ConseguirFechaActual(), []),
+      hora: new FormControl('', [])
+    });
+    this.tarjetaForm = new FormGroup({
+      nombre: new FormControl('', [Validators.required, Validators.maxLength(40)]),
+      numero: new FormControl('', [Validators.required, Validators.pattern('[0-9]{16,16}'), this.isVisa()]),
+      vencimiento: new FormControl("", [Validators.required, Validators.maxLength(120)]),
+      codigo: new FormControl('', [Validators.required, Validators.pattern('[0-9]{3,3}')]),
+    });
+  
+    this.efectivoForm = new FormGroup({
+      monto: new FormControl('', [Validators.required, Validators.pattern('[0-9]{1,7}')]),
+    });
+  }
+  Terminar( e: boolean) {
+    
+    //drop every change on the forms
+    this.vistaActual = 0;
+    this.hastaCompletado = 0;
+    this.metodoPago = "Efectivo";
+    this.submited = false;
+    this.imagenSubida = "";
+    this.Resetear();
+    this.loading = false;
+    this.confirmado = false;
+    
+  }
 }
