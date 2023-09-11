@@ -44,7 +44,7 @@
         <form [formGroup]="pedidoForm" class="pedidos-form">
           <div class="pedidos-form__textarea__container">
             <textarea class="pedidos-form__textarea" formControlName="objetos"
-              placeholder="Escribe los objetos de tu pedido..."
+              placeholder="Escribe los objetos de tu pedido... *"
               [ngClass]="{error:TieneErrores(this.pedidoForm, 'objetos') }">
           </textarea>
             <div class="pedidos-form__textarea__contador">
@@ -57,14 +57,17 @@
           <p class="error__label"
             *ngIf=" TieneErrores(this.pedidoForm, 'objetos') && this.pedidoForm.controls['objetos'].hasError('maxlength')">
             No debe exceder los 1200 caracteres </p>
-          <input type="file" formControlName="imagen" name="imagen" id="imagen" class="inputfile" />
+          <input type="file" formControlName="imagen" accept="image/jpeg" name="imagen" id="imagen" class="inputfile" />
           <label for="imagen" class="pedidos-form__file">
-            <img src="assets/img-picker.png">
+            <img id="imagen-previsualizada" [src]="ExisteImagen()?  imagenSubida[0]: 'assets/img-picker.png'">
             <span class="iborrainputfile" *ngIf="!ExisteImagen()">Puedes incluir una imagen si prefieres</span>
-            <span class="iborrainputfile" *ngIf="ExisteImagen()">Imagen cargada</span>
+            <span class="iborrainputfile" *ngIf="ExisteImagen()">{{imagenSubida.length > 1?
+              imagenSubida.length.toString() + " imágenes subidas" : "Imagen Subida"}}</span>
+
             <p (mouseup)="EliminarImagen()" *ngIf="ExisteImagen()">X Eliminar </p>
           </label>
         </form>
+        <p class="pedidos__aclaracion">* Estos campos son obligatorios </p>
         <div class="pedidos__buttons">
           <button class="pedidos__button pedidos__button-volver" (click)="CambiarVista(this.vistaActual - 1)">
             Atrás</button>
@@ -77,38 +80,40 @@
     <!--Descripcion del local-->
     <article class="pedidos" [ngClass]="{'salida-izquierda': salidaIzquierda}" *ngIf="vistaActual==2">
       <div class="pedidos__header-especial">
-        <h1 class="pedidos__title-especial pedidos__title-especial-active pedidos__title-especial-active-left">Dirección del local</h1>
-        <h1 class="pedidos__title-especial ">Direccion de entrega</h1>
+        <h1 class="pedidos__title-especial pedidos__title-especial-active pedidos__title-especial-active-left">Dirección
+          del local</h1>
+        <h1 class="pedidos__title-especial "
+          (click)="this.localForm.invalid? submited=true:CambiarVista(this.vistaActual+1)">Dirección de entrega</h1>
       </div>
       <div class="pedidos__container">
         <p class="pedidos__subtitle">Descríbenos la dirección del local donde quieres que busquemos tu producto</p>
         <form [formGroup]="localForm" class="pedidos-form pedidos-form__resized">
           <div class="pedidos-form__con-label">
-            <label for="calle"> Calle:</label>
+            <label for="calle"> Calle:*</label>
             <input type="text" name="calle" id="calle" formControlName="calle" placeholder="Nombre de la calle"
               class="pedidos-form__input" [ngClass]="{error: TieneErrores(localForm, 'calle')}" />
           </div>
           <p class="error__label" *ngIf=" Error(localForm, 'calle', 'required')">
             Este campo es requerido</p>
           <p class=" error__label" *ngIf=" Error(localForm, 'calle', 'maxlength')">
-            No debe exceder el limite de caracteres </p>
+            No debe exceder el límite de caracteres </p>
           <div class="pedidos-form__con-label">
-            <label for="numero"> Número:</label>
+            <label for="numero"> Número:*</label>
             <input type="number" name="numero" id="numero" formControlName="numero" placeholder="Número de la calle"
               class="pedidos-form__input" [ngClass]="{error: TieneErrores(localForm, 'numero')}" />
           </div>
           <p class="error__label" *ngIf=" Error(localForm, 'numero', 'required')">
             Este campo es requerido</p>
           <p class=" error__label" *ngIf=" Error(localForm, 'numero', 'pattern')">
-            No debe exceder el limite de caracteres </p>
+            No debe exceder el límite de caracteres </p>
           <div class="pedidos-form__con-label">
-            <label for="ciudad"> Ciudad:</label>
+            <label for="ciudad"> Ciudad:*</label>
             <select class="pedidos-form__input" name="ciudad" id="ciudad" placeholder="Seleccione una ciudad"
               formControlName="ciudad" [ngClass]="{error: TieneErrores(localForm, 'ciudad')}">
               <option value="Villa Carlos Paz">Villa Carlos Paz</option>
               <option value="Santa Rosa de Calamuchita"> Santa Rosa de Calamuchita</option>
               <option value="Villa General Belgrano">Villa General Belgrano</option>
-              <option value="Cosquin">Cosquin</option>
+              <option value="Cosquin">Cosquín</option>
               <option value="Mina Clavero">Mina Clavero</option>
               <option value="Nono">Nono</option>
             </select>
@@ -124,8 +129,9 @@
           </div>
 
           <p class=" error__label" *ngIf=" Error(localForm, 'referencia', 'maxlength')">
-            No debe exceder el limite de caracteres </p>
+            No debe exceder el límite de caracteres </p>
         </form>
+        <p class="pedidos__aclaracion">* Estos campos son obligatorios </p>
         <div class="pedidos__buttons">
           <button class="pedidos__button pedidos__button-volver" (click)="CambiarVista(this.vistaActual -1)">
             Atrás</button>
@@ -138,44 +144,48 @@
     <!--Descripcion del lugar de entrega-->
     <article class="pedidos" [ngClass]="{'salida-izquierda': salidaIzquierda}" *ngIf="vistaActual==3">
       <div class="pedidos__header-especial">
-        <h1 class="pedidos__title-especial ">Dirección del local</h1>
-        <h1 class="pedidos__title-especial pedidos__title-especial-active pedidos__title-especial-active-right">Direccion de entrega</h1>
+        <h1 class="pedidos__title-especial " (click)="CambiarVista(this.vistaActual -1)">Dirección del local</h1>
+        <h1 class="pedidos__title-especial pedidos__title-especial-active pedidos__title-especial-active-right">
+          Dirección de entrega</h1>
       </div>
       <div class="pedidos__container">
         <p class="pedidos__subtitle">Descríbenos la dirección de entrega</p>
         <form [formGroup]="lugarEntregaForm" class="pedidos-form pedidos-form__resized">
           <div class="pedidos-form__con-label">
-            <label for="calle"> Calle:</label>
+            <label for="calle"> Calle:*</label>
             <input type="text" name="calle" id="calle" formControlName="calle" placeholder="Nombre de la calle"
               class="pedidos-form__input" [ngClass]="{error: TieneErrores(lugarEntregaForm, 'calle')}" />
           </div>
           <p class="error__label" *ngIf=" Error(lugarEntregaForm, 'calle', 'required')">
             Este campo es requerido</p>
           <p class=" error__label" *ngIf=" Error(lugarEntregaForm, 'calle', 'maxlength')">
-            No debe exceder el limite de caracteres </p>
+            No debe exceder el límite de caracteres </p>
           <div class="pedidos-form__con-label">
-            <label for="numero"> Número:</label>
+            <label for="numero"> Número:*</label>
             <input type="number" name="numero" id="numero" formControlName="numero" placeholder="Número de la calle"
               class="pedidos-form__input" [ngClass]="{error: TieneErrores(lugarEntregaForm, 'numero')}" />
           </div>
           <p class="error__label" *ngIf=" Error(lugarEntregaForm, 'numero', 'required')">
             Este campo es requerido</p>
           <p class=" error__label" *ngIf=" Error(lugarEntregaForm, 'numero', 'pattern')">
-            No debe exceder el limite de caracteres </p>
+            No debe exceder el límite de caracteres </p>
           <div class="pedidos-form__con-label">
-            <label for="ciudad"> Ciudad:</label>
+            <label for="ciudad"> Ciudad:*</label>
             <select class="pedidos-form__input" name="ciudad" id="ciudad" formControlName="ciudad"
               [ngClass]="{error: TieneErrores(lugarEntregaForm, 'ciudad')}">
               <option value="Villa Carlos Paz">Villa Carlos Paz</option>
               <option value="Santa Rosa de Calamuchita"> Santa Rosa de Calamuchita</option>
               <option value="Villa General Belgrano">Villa General Belgrano</option>
-              <option value="Cosquin">Cosquin</option>
+              <option value="Cosquin">Cosquín</option>
               <option value="Mina Clavero">Mina Clavero</option>
               <option value="Nono">Nono</option>
             </select>
           </div>
           <p class="error__label" *ngIf=" Error(lugarEntregaForm, 'ciudad', 'required')">
             Este campo es requerido</p>
+          <p class="error__label" *ngIf=" Error(lugarEntregaForm,'ciudad','issamecity')">
+            La ciudad de entrega debe ser la misma que la del local
+          </p>
           <div class="pedidos-form__con-label">
             <label for="referencia"> Referencia:</label>
             <input type="text" name="referencia" id="referencia" formControlName="referencia"
@@ -183,7 +193,7 @@
               [ngClass]="{error: TieneErrores(lugarEntregaForm, 'referencia')}" />
           </div>
           <p class=" error__label" *ngIf=" Error(lugarEntregaForm, 'referencia', 'maxlength')">
-            No debe exceder el limite de caracteres </p>
+            No debe exceder el límite de caracteres </p>
           <fieldset class="pedidos-form__fieldset">
             <input type="radio" name="entrega" id="lo-antes-posible" value="lo-antes-posible" formControlName="entrega"
               (click)="QuitarRequired()" />
@@ -192,28 +202,31 @@
               formControlName="entrega" (click)="AgregarRequired()" />
             <label for="programar-entrega" (click)="AgregarRequired()">Programar entrega</label>
           </fieldset>
-          <div class="pedidos-form__con-label"
+          <div class="pedidos-form__con-label" 
             *ngIf="lugarEntregaForm.controls['entrega'].value == 'programar-entrega'">
-            <label for="fecha" class="pedidos-form__label">Fecha de entrega:</label>
-            <input type="date" name="fecha" id="fecha" formControlName="fecha" class="pedidos-form__input"
+            <label for="fecha" class="pedidos-form__label" >Fecha de entrega:*</label>
+            <input type="date" name="fecha" id="fecha" formControlName="fecha" class="pedidos-form__input" 
               [min]="  ConseguirFechaActual()" [ngClass]="{error: TieneErrores(lugarEntregaForm, 'fecha')}" />
           </div>
           <p class="error__label" *ngIf=" Error(lugarEntregaForm, 'fecha', 'required')">
             Este campo es requerido</p>
           <div class="pedidos-form__con-label"
             *ngIf="lugarEntregaForm.controls['entrega'].value == 'programar-entrega'">
-            <label for="hora" class="pedidos-form__label">Hora de entrega:</label>
+            <label for="hora" class="pedidos-form__label">Hora de entrega:*</label>
             <input type="time" name="hora" id="hora" formControlName="hora" class="pedidos-form__input"
               [ngClass]="{error: TieneErrores(lugarEntregaForm, 'hora')}" />
           </div>
+          <p class="error__label" *ngIf=" Error(lugarEntregaForm, 'hora', 'righttime')">
+            Como mínimo debe elegir haber una hora de diferencia con la hora actual</p>
           <p class="error__label" *ngIf=" Error(lugarEntregaForm, 'hora', 'required')">
             Este campo es requerido</p>
         </form>
+        <p class="pedidos__aclaracion">* Estos campos son obligatorios </p>
         <div class="pedidos__buttons">
           <button class="pedidos__button pedidos__button-volver" (click)="CambiarVista(this.vistaActual -1)">
             Atrás</button>
           <button class="pedidos__button"
-            (click)="this.lugarEntregaForm.invalid? submited=true:CambiarVista(this.vistaActual+1)"> Continuar</button>
+            (click)="this.lugarEntregaForm.controls['hora'].updateValueAndValidity();this.lugarEntregaForm.invalid? submited=true:CambiarVista(this.vistaActual+1)"> Continuar</button>
         </div>
       </div>
     </article>
@@ -224,7 +237,7 @@
         <h1 class="pedidos__title">Pago</h1>
       </div>
       <div class="pedidos__container">
-        <p class="pedidos__subtitle">El total a abonar es: ${{TotalPago()}}</p>
+        <p class="pedidos__subtitle">El total a abonar es: {{TotalPago()| currency}}</p>
         <p class="pedidos__subtitle">Elige tu forma de pago: </p>
         <div class="pedidos-tipo">
           <div class="pedidos-tipo__container" (click)="MetodoDePago('Efectivo')">
@@ -254,11 +267,11 @@
         <h1 class="pedidos__title">Efectivo</h1>
       </div>
       <div class="pedidos__container">
-        <p class="pedidos__subtitle">El total a abonar es: ${{TotalPago()}}</p>
+        <p class="pedidos__subtitle">El total a abonar es: {{TotalPago()| currency}}</p>
         <form [formGroup]="efectivoForm">
           <div class="pedidos-form__con-label">
             <label for="monto">
-              Monto:</label>
+              Monto:*</label>
             <input type="number" name="monto" id="monto" formControlName="monto"
               placeholder="Monto con el que va a pagar" class="pedidos-form__input"
               [ngClass]="{error: TieneErrores(efectivoForm, 'monto') || ( (efectivoForm.controls['monto'].touched || submited) && +efectivoForm.controls['monto'].value! < TotalPago())}" />
@@ -270,12 +283,12 @@
             *ngIf="( (efectivoForm.controls['monto'].touched || submited) && +efectivoForm.controls['monto'].value! < TotalPago())">
             El monto debe ser mayor o igual al total a pagar</p>
           <p class=" error__label" *ngIf=" Error(efectivoForm, 'monto', 'pattern')">
-            No debe exceder el limite de caracteres </p>
-          <p *ngIf="+efectivoForm.controls['monto'].value! > TotalPago()">
-            Su vuelto es de: ${{+efectivoForm.controls['monto'].value! - TotalPago()}}
+            No debe exceder el límite de caracteres </p>
+          <p class="vuelto" *ngIf="+efectivoForm.controls['monto'].value! > TotalPago()">
+            Su vuelto es de: {{(+efectivoForm.controls['monto'].value! - TotalPago()) | currency}}
           </p>
         </form>
-
+        <p class="pedidos__aclaracion">* Estos campos son obligatorios </p>
         <div class="pedidos__buttons">
           <button class="pedidos__button pedidos__button-volver" (click)="CambiarVista(this.vistaActual -1)">
             Atrás</button>
@@ -320,20 +333,20 @@
         </p>
         <form [formGroup]="tarjetaForm" class="pedidos-form pedidos-form__resized">
 
-          <label for="nombre" class="especial__label"> Nombre y apellido del titular:</label>
-          <input type="text" name="nombre" id="nombre" formControlName="nombre"
-            placeholder="Nombre como aparece en la tarjeta" class="pedidos-form__input especial__input"
-            (mouseup)="flipped=false" [ngClass]="{error: TieneErrores(tarjetaForm, 'nombre')}" />
+          <label for="nombre" class="especial__label" style="margin-top: 1rem; margin-bottom:1rem;"> Nombre y apellido
+            del titular:*</label>
+          <input type="text" name="nombre" id="nombre" formControlName="nombre" placeholder="Como aparece en la tarjeta"
+            class="pedidos-form__input especial__input" (mouseup)="flipped=false"
+            [ngClass]="{error: TieneErrores(tarjetaForm, 'nombre')}" />
           <p class="error__label" *ngIf=" Error(tarjetaForm, 'nombre', 'required')">
             Este campo es requerido</p>
           <p class=" error__label" *ngIf=" Error(tarjetaForm, 'nombre', 'maxlength')">
-            No debe exceder el limite de caracteres </p>
+            No debe exceder el límite de caracteres </p>
           <div class="pedidos-form__con-label">
-            <label for="numeroTarjeta"> Número de tarjeta:</label>
+            <label for="numeroTarjeta"> Número de tarjeta:*</label>
             <input type="number" name="numeroTarjeta" id="numeroTarjeta" formControlName="numero"
               placeholder="XXXX XXXX XXXX XXXX" class="pedidos-form__input" (mouseup)="flipped=false" maxlength="16"
               [ngClass]="{error: TieneErrores(tarjetaForm, 'numero')}" />
-
           </div>
           <p class="error__label" *ngIf=" Error(tarjetaForm, 'numero', 'required')">
             Este campo es requerido</p>
@@ -342,7 +355,7 @@
           <p class=" error__label" *ngIf=" Error(tarjetaForm, 'numero', 'isvisa')">
             Solo aceptamos tarjeta Visa </p>
           <div class="pedidos-form__con-label">
-            <label for="fechaVencimiento"> Fecha de vencimiento:</label>
+            <label for="fechaVencimiento"> Fecha de vencimiento:*</label>
             <input type="month" name="fechaVencimiento" id="fechaVencimiento" formControlName="vencimiento"
               class="pedidos-form__input" [min]="MesyAnioActual()" (mouseup)="flipped=false"
               [ngClass]="{error: TieneErrores(tarjetaForm, 'vencimiento')}" />
@@ -351,7 +364,7 @@
             Este campo es requerido</p>
 
           <div class="pedidos-form__con-label">
-            <label for="codigo"> Código de seguridad:</label>
+            <label for="codigo"> Código de seguridad:*</label>
             <input type="number" (mouseup)="flipped=true" name="codigo" id="codigo" formControlName="codigo"
               placeholder="CVC" class="pedidos-form__input" maxlength="3"
               [ngClass]="{error: TieneErrores(tarjetaForm, 'codigo')}" />
@@ -359,8 +372,9 @@
           <p class="error__label" *ngIf=" Error(tarjetaForm, 'codigo', 'required')">
             Este campo es requerido</p>
           <p class=" error__label" *ngIf=" Error(tarjetaForm, 'codigo', 'pattern')">
-            Debe tener exactamente 3 Caracteres </p>
+            Debe tener exactamente 3 caracteres </p>
         </form>
+        <p class="pedidos__aclaracion">* Estos campos son obligatorios </p>
         <div class="pedidos__buttons">
           <button class="pedidos__button pedidos__button-volver" (click)="CambiarVista(this.vistaActual -1)">
             Atrás</button>
@@ -376,7 +390,7 @@
         <h1 class="pedidos__title">Confirmar Pedido</h1>
       </div>
       <div class="pedidos__container">
-        <p class="pedidos__subtitle">Verifica que todo este en orden</p>
+        <p class="pedidos__subtitle">Verifica que todo esté en orden</p>
         <div class="pedidos__confirmacion__container">
           <p class="pedidos__subtitle pedidos__confirmacion__title">Productos Pedidos</p>
           <hr>

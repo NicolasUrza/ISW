@@ -74,8 +74,14 @@ header {
     align-items: center;
     color: #111111;
     margin-top: 5vh;
+   
     animation: entrada 0.5s ease-in-out;
-
+    &__aclaracion{
+        font-size: 1rem;
+        font-weight: 500;
+        color: #999;
+        margin-top: 1rem;
+    }
     &__header {
         background: linear-gradient(100deg, $color-salmon 0, $color-salmon 65%, $color-barbie 100%);
         border-top-left-radius: 15px;
@@ -94,7 +100,7 @@ header {
         }
 
         &-especial {
-
+            
             width: 80%;
             background-color: $color-claro;
             border-top-left-radius: 15px;
@@ -119,6 +125,7 @@ header {
         // background: linear-gradient(100deg, $color-salmon 0, $color-salmon 65%, $color-barbie 100%);
         box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
         width: 80%;
+        min-height: 28vh;
 
         @include respond(phone) {
             width: 90%;
@@ -141,7 +148,7 @@ header {
             justify-content: center;
             width: 100%;
             padding: 1rem 0;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: #fff;
             &-active {
                 background: linear-gradient(100deg, $color-salmon 0, $color-salmon 65%, $color-barbie 100%);
@@ -160,6 +167,7 @@ header {
         width: 90%;
         text-align: center;
         margin-top: 0.7rem;
+        line-height: 1.15;
     }
 
     &__confirmacion {
@@ -261,11 +269,16 @@ header {
         color: #fff;
         font-size: 1.2rem;
         font-weight: 500;
-        box-shadow: 5px 10px 20px rgba(0, 0, 0, 0.5);
+        box-shadow: 5px 7px 10px rgba(0, 0, 0, 0.2);
         cursor: pointer;
+        transition: all 0.5s ease-in-out;
 
         &-volver {
             background: linear-gradient(to right, #facf40, #ffc70e, #f8c726, #facf40);
+        }
+
+        &:active{
+            transform: scale(0.7);
         }
     }
 
@@ -317,7 +330,7 @@ header {
 
             &__contador {
                 position: absolute;
-                bottom: 0;
+                bottom: 1%;
                 right: 9%;
             }
         }
@@ -371,7 +384,7 @@ header {
             cursor: pointer;
 
             &::placeholder {
-                color: #777;
+                color: #aaa;
             }
         }
 
@@ -380,7 +393,8 @@ header {
             align-items: center;
             justify-content: flex-start;
             margin-top: 1rem;
-            width: 100%;
+            margin-left: 0.75rem;
+            width: 90%;
 
             label {
                 font-size: 1.2rem;
@@ -412,20 +426,21 @@ header {
         font-size: 1.2rem;
     }
 
-    &___input {
-        width: 90%;
+    &__input {
+        width: 85% !important;
 
     }
 }
 
 .error {
-    border: solid 5px red;
+    border: solid 2px red;
 
     &__label {
         width: 90%;
         display: flex;
         justify-content: flex-start;
         color: red;
+        margin-top: 0.25rem;
     }
 }
 
@@ -616,4 +631,10 @@ footer {
 
 .anti-sticky {
     height: 100px;
+}
+
+.vuelto{
+    width: 90%;
+    text-align: right;
+    margin-top: 10px;
 }

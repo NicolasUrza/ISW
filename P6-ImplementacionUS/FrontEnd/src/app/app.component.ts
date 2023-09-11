@@ -14,7 +14,7 @@ export class AppComponent {
   entradaDerecha = false;
   vistaActual = 0;
   metodoPago = "Efectivo";
-  imagenSubida = "";
+  imagenSubida = new Array<string>();
   submited = false;
   flipped = false;
   footer = false;
@@ -58,7 +58,7 @@ export class AppComponent {
   lugarEntregaForm = new FormGroup({
     calle: new FormControl('', [Validators.required, Validators.maxLength(120)]),
     numero: new FormControl('', [Validators.required, Validators.pattern('[0-9]{1,7}')]),
-    ciudad: new FormControl('', [Validators.required, Validators.maxLength(120)]),
+    ciudad: new FormControl('', [Validators.required, Validators.maxLength(120), this.isSameCityValidator()]),
     referencia: new FormControl('', [Validators.maxLength(120)]),
     entrega: new FormControl('lo-antes-posible', [Validators.maxLength(120)]),
     fecha: new FormControl(this.ConseguirFechaActual(), []),
@@ -72,7 +72,7 @@ export class AppComponent {
   });
 
   efectivoForm = new FormGroup({
-    monto: new FormControl('', [Validators.required, Validators.pattern('[0-9]{1,7}')]),
+    monto: new FormControl('', [Validators.required, Validators.pattern('[0-9]{1,7}(?:\.[0-9]{1,2})?')]),
   });
   ConseguirFechaActual() {
     var fecha = new Date();
@@ -98,7 +98,6 @@ export class AppComponent {
       this.hastaCompletado = vista;
     }
     if (this.pedidoForm.controls["imagen"].value != '') {
-      this.imagenSubida = this.pedidoForm.controls["imagen"].value!;
       this.pedidoForm.controls["imagen"].setValue('');
     }
     setTimeout(() => {
@@ -109,11 +108,16 @@ export class AppComponent {
 
   }
   ExisteImagen() {
-    return this.pedidoForm.controls["imagen"].value != '' || this.imagenSubida != '';
+    //me fijo si imagen subida esta vacio
+    if (this.imagenSubida.length == 0) {
+      return false;
+    }
+    return true;
+
   }
   constructor() { }
   EliminarImagen() {
-    this.imagenSubida = '';
+    this.imagenSubida = new Array<string>();
     this.pedidoForm.controls["imagen"].setValue('');
   }
   TotalPago() {
@@ -134,13 +138,13 @@ export class AppComponent {
     this.lugarEntregaForm.controls["fecha"].clearValidators();
     this.lugarEntregaForm.controls["fecha"].updateValueAndValidity();
     this.lugarEntregaForm.controls["hora"].clearValidators();
-    this.lugarEntregaForm.controls["hora"].updateValueAndValidity();
 
+    this.lugarEntregaForm.controls["hora"].updateValueAndValidity();
   }
   AgregarRequired() {
     this.lugarEntregaForm.controls["fecha"].setValidators([Validators.required]);
     this.lugarEntregaForm.controls["fecha"].updateValueAndValidity();
-    this.lugarEntregaForm.controls["hora"].setValidators([Validators.required]);
+    this.lugarEntregaForm.controls["hora"].setValidators([Validators.required, this.atRightTimeValidator()]);
     this.lugarEntregaForm.controls["hora"].updateValueAndValidity();
   }
   NumeroTarjeta(numeroIngresado: string) {
@@ -179,7 +183,50 @@ export class AppComponent {
       return this.isVisaCard(control.value.toString()) ? null : { isvisa: { value: control.value } };
     };
   }
-
+  isSameCityValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      return this.isSameCity(control.value.toString()) ? null : { issamecity: { value: control.value } };
+    };
+  }
+  atRightTimeValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      return this.isRightTime(control.value.toString()) ? null : { righttime: { value: control.value } };
+    };
+  }
+  isRightTime(hora: string) {
+    if(hora){
+      let date = new Date();
+      console.log(date);
+      if (this.lugarEntregaForm.controls["fecha"].value! == this.ConseguirFechaActual()) {
+        console.log("es hoy");
+        let horaActual = date.getHours();
+        console.log(horaActual);
+        let minutosActual = date.getMinutes();
+        console.log(minutosActual);
+        let horaIngresada = parseInt(hora.substring(0, 2));
+        console.log(horaIngresada);
+        let minutosIngresados = parseInt(hora.substring(3, 5));
+        console.log(minutosIngresados);
+        if (horaIngresada < horaActual + 1) {
+          return false;
+        }
+        else if (horaIngresada == horaActual + 1 && minutosIngresados < minutosActual) {
+          return false;
+        }
+      }
+      return true;
+    }
+    return false;
+  }
+  isSameCity(city: string): boolean {
+    if (city) {
+      // que empieze con 4
+      if (city == this.localForm.controls["ciudad"].value) {
+        return true;
+      }
+    }
+    return false;
+  }
   isVisaCard(cardNumber: string): boolean {
     if (cardNumber) {
       // que empieze con 4
@@ -195,6 +242,26 @@ export class AppComponent {
       }
     }
     return false;
+  }
+
+  @HostListener('change', ['$event'])
+  onChange(event: any) {
+    if (event.target.files.length > 0) {
+      const file = event.target.files[0];
+      const maxSizeMB = 5;
+      const maxSizeBytes = maxSizeMB * 1024 * 1024; // Convertir a bytes
+      //document.getElementById("imagen-previsualizada")!.setAttribute('src', this.imagenSubida);
+      // Validar el tamaño máximo en MB (por ejemplo, 5 MB)
+      if (file.size > maxSizeBytes) {
+        alert(`El archivo ${file.name} excede el tamaño máximo de ${maxSizeMB} MB.`);
+        return;
+      } else {
+        this.imagenSubida.push(URL.createObjectURL(file));
+        console.log(this.imagenSubida);
+      }
+    }
+  
+
   }
 
   MesyAnioActual() {
@@ -217,7 +284,7 @@ export class AppComponent {
 
   }
 
-  Resetear(){
+  Resetear() {
     this.pedidoForm = new FormGroup({
       objetos: new FormControl('', [Validators.required, Validators.maxLength(1200)]),
       imagen: new FormControl('')
@@ -243,22 +310,22 @@ export class AppComponent {
       vencimiento: new FormControl("", [Validators.required, Validators.maxLength(120)]),
       codigo: new FormControl('', [Validators.required, Validators.pattern('[0-9]{3,3}')]),
     });
-  
+
     this.efectivoForm = new FormGroup({
       monto: new FormControl('', [Validators.required, Validators.pattern('[0-9]{1,7}')]),
     });
   }
-  Terminar( e: boolean) {
-    
+  Terminar(e: boolean) {
+
     //drop every change on the forms
     this.vistaActual = 0;
     this.hastaCompletado = 0;
     this.metodoPago = "Efectivo";
     this.submited = false;
-    this.imagenSubida = "";
+    this.imagenSubida = new Array<string>();
     this.Resetear();
     this.loading = false;
     this.confirmado = false;
-    
+
   }
 }
