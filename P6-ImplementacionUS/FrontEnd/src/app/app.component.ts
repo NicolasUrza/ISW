@@ -194,7 +194,7 @@ export class AppComponent {
     };
   }
   isRightTime(hora: string) {
-    if(hora){
+    if (hora) {
       let date = new Date();
       console.log(date);
       if (this.lugarEntregaForm.controls["fecha"].value! == this.ConseguirFechaActual()) {
@@ -260,7 +260,7 @@ export class AppComponent {
         console.log(this.imagenSubida);
       }
     }
-  
+
 
   }
 
@@ -298,7 +298,7 @@ export class AppComponent {
     this.lugarEntregaForm = new FormGroup({
       calle: new FormControl('', [Validators.required, Validators.maxLength(120)]),
       numero: new FormControl('', [Validators.required, Validators.pattern('[0-9]{1,7}')]),
-      ciudad: new FormControl('', [Validators.required, Validators.maxLength(120)]),
+      ciudad: new FormControl('', [Validators.required, Validators.maxLength(120), this.isSameCityValidator()]),
       referencia: new FormControl('', [Validators.maxLength(120)]),
       entrega: new FormControl('lo-antes-posible', [Validators.maxLength(120)]),
       fecha: new FormControl(this.ConseguirFechaActual(), []),
@@ -312,7 +312,7 @@ export class AppComponent {
     });
 
     this.efectivoForm = new FormGroup({
-      monto: new FormControl('', [Validators.required, Validators.pattern('[0-9]{1,7}')]),
+      monto: new FormControl('', [Validators.required, Validators.pattern('[0-9]{1,7}(?:\.[0-9]{1,2})?')]),
     });
   }
   Terminar(e: boolean) {
