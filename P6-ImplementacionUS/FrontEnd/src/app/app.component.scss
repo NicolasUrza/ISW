@@ -25,10 +25,12 @@ header {
     img {
         margin-left: 16px;
         height: 40px;  
+        cursor: pointer;
         @include respond(phone) {
             width: 20%;
             height: fit-content;
         }
+
     }
 }
 
@@ -192,6 +194,7 @@ header {
             margin-top: 1rem;
             color: #fff;
             padding: 1rem;
+            padding-bottom: 1.7rem;
             border-radius: 15px;
 
             hr {
@@ -289,7 +292,7 @@ header {
         }
 
         &:active {
-            transform: scale(0.7);
+            transform: scale(0.9);
         }
     }
 

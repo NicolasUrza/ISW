@@ -110,7 +110,7 @@ export class AppComponent {
     }
     return false;
   }
-  ValidarMesMayorActual(mesyaño:string){
+  ValidarMesMayorActual(mesyaño: string) {
     let fechaActual = new Date();
     let fechaDate = new Date(mesyaño);
     //aumentar el día del mes en 1
@@ -125,12 +125,19 @@ export class AppComponent {
 
 
   }
-  MesValidator(){
+  MesValidator() {
     return (control: AbstractControl): ValidationErrors | null => {
       return this.ValidarMesMayorActual(control.value) ? null : { mes: { value: control.value } };
     };
   }
   CambiarVista(vista: number) {
+    if (vista == 0) {
+      let confirmoVueltaInicio = confirm("Esta seguro que desea volver al inicio? todos los datos que haya ingresado se perderan");
+      if(confirmoVueltaInicio){
+        this.Terminar(true);
+      }
+      return;
+    }
     this.salidaIzquierda = true;
     this.submited = false;
     if (vista > this.hastaCompletado) {
@@ -353,7 +360,7 @@ export class AppComponent {
     this.tarjetaForm = new FormGroup({
       nombre: new FormControl('', [Validators.required, Validators.maxLength(40)]),
       numero: new FormControl('', [Validators.required, Validators.pattern('[0-9]{16,16}'), this.isVisa()]),
-      vencimiento: new FormControl("", [Validators.required, Validators.maxLength(120)]),
+      vencimiento: new FormControl("", [Validators.required, Validators.maxLength(120), this.MesValidator()]),
       codigo: new FormControl('', [Validators.required, Validators.pattern('[0-9]{3,3}')]),
     });
 
@@ -372,8 +379,15 @@ export class AppComponent {
     this.Resetear();
     this.loading = false;
     this.confirmado = false;
+    
 
   }
+  FormatearFecha(fecha: string) {
+    let dia = fecha.substring(8, 10);
+    let mes = fecha.substring(5, 7);
+    let anio = fecha.substring(0, 4);
+    return dia + "/" + mes + "/" + anio;
 
+  }
 
 }
