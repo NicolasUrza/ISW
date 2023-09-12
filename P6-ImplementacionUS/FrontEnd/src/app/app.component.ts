@@ -20,7 +20,7 @@ export class AppComponent {
   footer = false;
   loading = false;
   hastaCompletado = 0;
- 
+
   HastaCompletado() {
     let hastaCompletado = 0;
     if (this.pedidoForm.invalid && this.hastaCompletado >= 1) {
@@ -67,7 +67,7 @@ export class AppComponent {
   tarjetaForm = new FormGroup({
     nombre: new FormControl('', [Validators.required, Validators.maxLength(40)]),
     numero: new FormControl('', [Validators.required, Validators.pattern('[0-9]{16,16}'), this.isVisa()]),
-    vencimiento: new FormControl("", [Validators.required, Validators.maxLength(120)]),
+    vencimiento: new FormControl("", [Validators.required, Validators.maxLength(120), this.MesValidator()]),
     codigo: new FormControl('', [Validators.required, Validators.pattern('[0-9]{3,3}')]),
   });
 
@@ -90,6 +90,45 @@ export class AppComponent {
     }
     let fe = anio + "-" + mesString + "-" + diaString;
     return fe;
+  }
+  ValidarMayorFechaActual(fecha: string) {
+    let fechaActual = new Date();
+    let fechaDate = new Date(fecha);
+    //aumentar el día del mes en 1
+    fechaDate.setDate(fechaDate.getDate() + 1);
+    if (fechaDate.getFullYear() > fechaActual.getFullYear()) {
+      return true;
+    }
+    if (fechaDate.getFullYear() == fechaActual.getFullYear() && fechaDate.getMonth() > fechaActual.getMonth()) {
+      return true;
+    }
+    if (fechaDate.getFullYear() == fechaActual.getFullYear() && fechaDate.getMonth() == fechaActual.getMonth() && fechaDate.getDate() > fechaActual.getDate()) {
+      return true;
+    }
+    if (fechaDate.getMonth() == fechaActual.getMonth() && fechaDate.getDate() == fechaActual.getDate() && fechaDate.getFullYear() == fechaActual.getFullYear()) {
+      return true;
+    }
+    return false;
+  }
+  ValidarMesMayorActual(mesyaño:string){
+    let fechaActual = new Date();
+    let fechaDate = new Date(mesyaño);
+    //aumentar el día del mes en 1
+    fechaDate.setDate(fechaDate.getDate() + 1);
+    if (fechaDate.getFullYear() > fechaActual.getFullYear()) {
+      return true;
+    }
+    if (fechaDate.getFullYear() == fechaActual.getFullYear() && fechaDate.getMonth() >= fechaActual.getMonth()) {
+      return true;
+    }
+    return false;
+
+
+  }
+  MesValidator(){
+    return (control: AbstractControl): ValidationErrors | null => {
+      return this.ValidarMesMayorActual(control.value) ? null : { mes: { value: control.value } };
+    };
   }
   CambiarVista(vista: number) {
     this.salidaIzquierda = true;
@@ -142,7 +181,7 @@ export class AppComponent {
     this.lugarEntregaForm.controls["hora"].updateValueAndValidity();
   }
   AgregarRequired() {
-    this.lugarEntregaForm.controls["fecha"].setValidators([Validators.required]);
+    this.lugarEntregaForm.controls["fecha"].setValidators([Validators.required, this.fechaValidator()]);
     this.lugarEntregaForm.controls["fecha"].updateValueAndValidity();
     this.lugarEntregaForm.controls["hora"].setValidators([Validators.required, this.atRightTimeValidator()]);
     this.lugarEntregaForm.controls["hora"].updateValueAndValidity();
@@ -181,6 +220,11 @@ export class AppComponent {
   isVisa(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       return this.isVisaCard(control.value.toString()) ? null : { isvisa: { value: control.value } };
+    };
+  }
+  fechaValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      return this.ValidarMayorFechaActual(control.value) ? null : { fecha: { value: control.value } };
     };
   }
   isSameCityValidator(): ValidatorFn {

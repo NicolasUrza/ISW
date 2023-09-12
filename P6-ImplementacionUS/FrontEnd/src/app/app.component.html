@@ -214,6 +214,8 @@
           </div>
           <p class="error__label" *ngIf=" Error(lugarEntregaForm, 'fecha', 'required')">
             Este campo es requerido</p>
+            <p class="error__label" *ngIf=" Error(lugarEntregaForm, 'fecha', 'fecha')">
+              La fecha ingresada no puede ser menor a la actual</p>
           <div class="pedidos-form__con-label"
             *ngIf="lugarEntregaForm.controls['entrega'].value == 'programar-entrega'">
             <label for="hora" class="pedidos-form__label">Hora de entrega:*</label>
@@ -367,7 +369,8 @@
           </div>
           <p class="error__label" *ngIf=" Error(tarjetaForm, 'vencimiento', 'required')">
             Este campo es requerido</p>
-
+            <p class="error__label" *ngIf=" Error(tarjetaForm, 'vencimiento', 'mes')">
+              Tarjeta vencida</p>
           <div class="pedidos-form__con-label">
             <label for="codigo"> Código de seguridad:*</label>
             <input type="number" (mouseup)="flipped=true" name="codigo" id="codigo" formControlName="codigo"

@@ -27,6 +27,7 @@ header {
         height: 40px;  
         @include respond(phone) {
             width: 20%;
+            height: fit-content;
         }
     }
 }
