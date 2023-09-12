@@ -20,7 +20,7 @@ export class AppComponent {
   footer = false;
   loading = false;
   hastaCompletado = 0;
-
+ 
   HastaCompletado() {
     let hastaCompletado = 0;
     if (this.pedidoForm.invalid && this.hastaCompletado >= 1) {
@@ -246,18 +246,20 @@ export class AppComponent {
 
   @HostListener('change', ['$event'])
   onChange(event: any) {
-    if (event.target.files.length > 0) {
-      const file = event.target.files[0];
-      const maxSizeMB = 5;
-      const maxSizeBytes = maxSizeMB * 1024 * 1024; // Convertir a bytes
-      //document.getElementById("imagen-previsualizada")!.setAttribute('src', this.imagenSubida);
-      // Validar el tamaño máximo en MB (por ejemplo, 5 MB)
-      if (file.size > maxSizeBytes) {
-        alert(`El archivo ${file.name} excede el tamaño máximo de ${maxSizeMB} MB.`);
-        return;
-      } else {
-        this.imagenSubida.push(URL.createObjectURL(file));
-        console.log(this.imagenSubida);
+    if (event.target.id == "imagen") {
+      if (event.target.files.length > 0) {
+        const file = event.target.files[0];
+        const maxSizeMB = 5;
+        const maxSizeBytes = maxSizeMB * 1024 * 1024; // Convertir a bytes
+        //document.getElementById("imagen-previsualizada")!.setAttribute('src', this.imagenSubida);
+        // Validar el tamaño máximo en MB (por ejemplo, 5 MB)
+        if (file.size > maxSizeBytes) {
+          alert(`El archivo ${file.name} excede el tamaño máximo de ${maxSizeMB} MB.`);
+          return;
+        } else {
+          this.imagenSubida.push(URL.createObjectURL(file));
+          console.log(this.imagenSubida);
+        }
       }
     }
 
@@ -328,4 +330,6 @@ export class AppComponent {
     this.confirmado = false;
 
   }
+
+
 }

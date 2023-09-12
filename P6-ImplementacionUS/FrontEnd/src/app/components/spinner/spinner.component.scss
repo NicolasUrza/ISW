@@ -1,3 +1,5 @@
+@import "../../../styles.scss";
+
 .spinner {
     position: fixed;
     top: 0;
@@ -342,8 +344,15 @@
     }
 
     &-box {
-        width: 80%;
-        height: 40%;
+        width: 300px;
+        height: 300px;
+
+        @include respond(phone) {
+
+            width: 80%;
+            height: 40%;
+        }
+
         position: relative;
     }
 }
@@ -385,7 +394,8 @@
     -webkit-animation: pulsing-circle 2.4s forwards;
     animation: pulsing-circle 2.4s forwards;
 }
-.btn-white{
+
+.btn-white {
     background-color: #fff;
     color: rgb(94, 221, 96);
     border: none;
@@ -399,6 +409,7 @@
 
 
 }
+
 .fade-in {
     animation: fade-in 4.6s forwards;
 }
@@ -408,11 +419,13 @@
         opacity: 0;
         transform: translateX(50%);
     }
+
     70% {
         opacity: 0;
         transform: translateX(50%);
     }
-    100%{
+
+    100% {
         opacity: 1;
         transform: translateX(0%);
     }
@@ -444,6 +457,7 @@
     70% {
         background-color: rgb(94, 221, 96, 0.5);
     }
+
     100% {
         background-color: rgb(94, 221, 96);
     }
