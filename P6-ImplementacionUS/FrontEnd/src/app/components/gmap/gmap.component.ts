@@ -18,16 +18,15 @@ export class GmapComponent implements OnChanges {
   @Output() coordenadas = new EventEmitter<google.maps.LatLngLiteral>();
   @Output() existe = new EventEmitter<boolean>();
   apiLoaded: Observable<boolean>;
-  markerOptions: google.maps.MarkerOptions = { draggable: true };
-  markerPosition: google.maps.LatLngLiteral = { lat: -31.9776691, lng: -64.5596857 };
+  markerOptions: google.maps.MarkerOptions = { draggable: false };
+  markerPosition: google.maps.LatLngLiteral | undefined;
   zoom = 16;
   geocoder: MapGeocoder;
-  center: google.maps.LatLngLiteral = { lat: -31.9776691, lng: -64.5596857 };
+  center: google.maps.LatLngLiteral = { lat: -31.4252716, lng: -64.4972074 };
   addMarker(event: google.maps.MapMouseEvent) {
     this.markerPosition = event.latLng!.toJSON();
-    if (!this.desde) {
-      this.coordenadas.emit(this.markerPosition);
-    }
+
+    this.coordenadas.emit(this.markerPosition);
     this.center = event.latLng!.toJSON();
     this.MostrarCalle(event.latLng!.toJSON());
   }
@@ -46,7 +45,7 @@ export class GmapComponent implements OnChanges {
     }).subscribe(({ results }) => {
       this.markerPosition = results[0].geometry.location.toJSON();
     });
-    return this.markerPosition;
+    return this.markerPosition!;
 
   }
   MostrarCalle(latLng: google.maps.LatLngLiteral) {
@@ -71,10 +70,10 @@ export class GmapComponent implements OnChanges {
     console.log(this.markerPosition);
     let request = {
       destination: this.desde!,
-      origin: this.markerPosition,
+      origin: this.markerPosition!,
       travelMode: google.maps.TravelMode.DRIVING
     };
-
+    console.log(request);
     this.mapDirectionsService.route(request).subscribe((results) => {
       console.log("estoy en la query");
       console.log(results);
@@ -98,7 +97,9 @@ export class GmapComponent implements OnChanges {
           this.CalcularValor();
         }
         this.center = results[0].geometry.location.toJSON();
-      });
+      })
+
+        ;
     }
   }
 
@@ -111,7 +112,7 @@ export class GmapComponent implements OnChanges {
     }
     else {
       results[0].address_components.forEach(element => {
-        console.log("estoy en el foreach"); 
+        console.log("estoy en el foreach");
         console.log(element);
         if (element.types.includes("street_number")) {
           console.log("numero existe");
@@ -126,8 +127,9 @@ export class GmapComponent implements OnChanges {
     if (calleExiste && numeroExiste) {
       console.log("existe");
       this.existe.emit(true);
-    }else{
-    console.log("no existe")
-    this.existe.emit(false);}
+    } else {
+      console.log("no existe")
+      this.existe.emit(false);
+    }
   }
 }

@@ -89,6 +89,12 @@ header {
         font-weight: 500;
         color: #999;
         margin-top: 1rem;
+        &-especial {
+            font-size: 0.8rem;
+            margin-top: 0;
+            width:100%;
+            text-align: right;
+        }
     }
 
     &__header {

@@ -49,6 +49,15 @@ export class AppComponent {
     this.precio = distancia / 100 * 50;
     this.distancia = distancia;
   }
+  CallesDistintas() {
+    if (this.localForm.controls["calle"].value! != this.lugarEntregaForm.controls["calle"].value!) {
+      return true;
+    }
+    if (this.localForm.controls["numero"].value! != this.lugarEntregaForm.controls["numero"].value!) {
+      return true;
+    }
+    return false;
+  }
   HastaCompletado() {
     let hastaCompletado = 0;
     if (this.pedidoForm.invalid && this.hastaCompletado >= 1) {
@@ -57,7 +66,7 @@ export class AppComponent {
     else if ((this.localForm.invalid || !this.existeRutaLocal) && this.hastaCompletado >= 2) {
       hastaCompletado = 2;
     }
-    else if (this.lugarEntregaForm.invalid && this.hastaCompletado >= 3) {
+    else if ((this.lugarEntregaForm.invalid || !this.existeRutaEntrega || !this.CallesDistintas()) && this.hastaCompletado >= 3) {
       hastaCompletado = 3;
     } else if ((this.metodoPago == "Tarjeta" && this.tarjetaForm.invalid || this.metodoPago == "Efectivo" && this.efectivoForm.invalid) && this.hastaCompletado >= 5) {
       hastaCompletado = 5;
@@ -218,9 +227,9 @@ export class AppComponent {
     this.lugarEntregaForm.controls["hora"].updateValueAndValidity();
   }
   AgregarRequired() {
-    this.lugarEntregaForm.controls["fecha"].setValidators([Validators.required, this.fechaValidator()]);
+    this.lugarEntregaForm.controls["fecha"].setValidators([Validators.required, this.FechaValidator(), this.SemanaValidator()]);
     this.lugarEntregaForm.controls["fecha"].updateValueAndValidity();
-    this.lugarEntregaForm.controls["hora"].setValidators([Validators.required, this.atRightTimeValidator()]);
+    this.lugarEntregaForm.controls["hora"].setValidators([Validators.required, this.AtRightTimeValidator()]);
     this.lugarEntregaForm.controls["hora"].updateValueAndValidity();
   }
   NumeroTarjeta(numeroIngresado: string) {
@@ -259,7 +268,7 @@ export class AppComponent {
       return this.isVisaCard(control.value.toString()) ? null : { isvisa: { value: control.value } };
     };
   }
-  fechaValidator(): ValidatorFn {
+  FechaValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       return this.ValidarMayorFechaActual(control.value) ? null : { fecha: { value: control.value } };
     };
@@ -269,7 +278,7 @@ export class AppComponent {
       return this.isSameCity(control.value.toString()) ? null : { issamecity: { value: control.value } };
     };
   }
-  atRightTimeValidator(): ValidatorFn {
+  AtRightTimeValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       return this.isRightTime(control.value.toString()) ? null : { righttime: { value: control.value } };
     };
@@ -343,8 +352,6 @@ export class AppComponent {
         }
       }
     }
-
-
   }
 
   MesyAnioActual() {
@@ -435,16 +442,33 @@ export class AppComponent {
     direcciones.forEach((direccion) => {
       if (direccion.types.includes("street_number")) {
         form.controls["numero"].setValue(direccion.long_name);
+        form.controls["numero"].markAsTouched();
       }
       if (direccion.types.includes("locality") && !entrega) {
         form.controls["ciudad"].setValue(direccion.long_name);
+        form.controls["ciudad"].markAsTouched();
       }
       if (direccion.types.includes("route")) {
         form.controls["calle"].setValue(direccion.long_name);
+        form.controls["calle"].markAsTouched();
       }
 
     });
-
+  }
+  SemanaValidator() {
+    return (control: AbstractControl): ValidationErrors | null => {
+      return this.ValidarUnaSemana(control.value) ? null : { 'mayor-semana': { value: control.value } };
+    };
+  }
+  ValidarUnaSemana(fecha: string) {
+    let fechaActual = new Date();
+    let fechaDate = new Date(fecha);
+    fechaActual.setHours(0, 0, 0, 0);
+    // saber si la fecha date es 8 dias mayor a la fecha actual
+    if (fechaDate.getTime() > fechaActual.getTime() + 7 * 24 * 60 * 60 * 1000) {
+      return false;
+    }
+    return true;
 
   }
 }
