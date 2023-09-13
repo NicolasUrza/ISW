@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, HostListener } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 
+import { MapDirectionsService } from '@angular/google-maps';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -20,13 +21,40 @@ export class AppComponent {
   footer = false;
   loading = false;
   hastaCompletado = 0;
-
+  coordenadasHasta: google.maps.LatLngLiteral | undefined;
+  coordenadasDesde: google.maps.LatLngLiteral | undefined;
+  precio = 0;
+  distancia = 0;
+  existeRutaLocal = true;
+  existeRutaEntrega = true;
+  constructor() {
+    this.lugarEntregaForm.controls["ciudad"].disable();
+  }
+  ExisteRutaLocal(existe: boolean) {
+    console.log("existe ruta local estoy en esa funcion");
+    console.log(existe);
+    this.existeRutaLocal = existe;
+  }
+  ExisteRutaEntrega(existe: boolean) {
+    this.existeRutaEntrega = existe;
+  }
+  AsignarCoordenadas(coordenadas: google.maps.LatLngLiteral) {
+    this.coordenadasDesde = coordenadas;
+  }
+  AsignarCoordenadasHasta(coordenadas: google.maps.LatLngLiteral) {
+    this.coordenadasHasta = coordenadas;
+  }
+  CalcularPrecioPorRuta(distancia: number) {
+    console.log("distancia");
+    this.precio = distancia / 100 * 50;
+    this.distancia = distancia;
+  }
   HastaCompletado() {
     let hastaCompletado = 0;
     if (this.pedidoForm.invalid && this.hastaCompletado >= 1) {
       hastaCompletado = 1;
     }
-    else if (this.localForm.invalid && this.hastaCompletado >= 2) {
+    else if ((this.localForm.invalid || !this.existeRutaLocal) && this.hastaCompletado >= 2) {
       hastaCompletado = 2;
     }
     else if (this.lugarEntregaForm.invalid && this.hastaCompletado >= 3) {
@@ -133,10 +161,13 @@ export class AppComponent {
   CambiarVista(vista: number) {
     if (vista == 0) {
       let confirmoVueltaInicio = confirm("Esta seguro que desea volver al inicio? todos los datos que haya ingresado se perderan");
-      if(confirmoVueltaInicio){
+      if (confirmoVueltaInicio) {
         this.Terminar(true);
       }
       return;
+    }
+    if (this.vistaActual == 2) {
+      this.lugarEntregaForm.controls["ciudad"].setValue(this.localForm.controls["ciudad"].value!);
     }
     this.salidaIzquierda = true;
     this.submited = false;
@@ -161,13 +192,12 @@ export class AppComponent {
     return true;
 
   }
-  constructor() { }
   EliminarImagen() {
     this.imagenSubida = new Array<string>();
     this.pedidoForm.controls["imagen"].setValue('');
   }
   TotalPago() {
-    return 1000;
+    return this.precio;
   }
   MetodoDePago(metodo: string) {
     this.metodoPago = metodo;
@@ -376,10 +406,22 @@ export class AppComponent {
     this.metodoPago = "Efectivo";
     this.submited = false;
     this.imagenSubida = new Array<string>();
-    this.Resetear();
     this.loading = false;
     this.confirmado = false;
-    
+
+    this.salidaIzquierda = false;
+    this.salidaDerecha = false;
+    this.entradaIzquierda = false;
+    this.entradaDerecha = false;
+    this.flipped = false;
+    this.footer = false;
+    this.coordenadasHasta = undefined;
+    this.coordenadasDesde = undefined;
+    this.precio = 0;
+    this.distancia = 0;
+    this.existeRutaLocal = true;
+    this.existeRutaEntrega = true;
+    this.Resetear();
 
   }
   FormatearFecha(fecha: string) {
@@ -389,5 +431,20 @@ export class AppComponent {
     return dia + "/" + mes + "/" + anio;
 
   }
+  DeCoordenadasANombre(direcciones: google.maps.GeocoderAddressComponent[], form: FormGroup, entrega = false) {
+    direcciones.forEach((direccion) => {
+      if (direccion.types.includes("street_number")) {
+        form.controls["numero"].setValue(direccion.long_name);
+      }
+      if (direccion.types.includes("locality") && !entrega) {
+        form.controls["ciudad"].setValue(direccion.long_name);
+      }
+      if (direccion.types.includes("route")) {
+        form.controls["calle"].setValue(direccion.long_name);
+      }
 
+    });
+
+
+  }
 }

@@ -86,6 +86,17 @@
           (click)="this.localForm.invalid? submited=true:CambiarVista(this.vistaActual+1)">Dirección de entrega</h1>
       </div>
       <div class="pedidos__container">
+        <div class="gmaps__container">
+          <app-gmap class="gmaps"
+            [calle]="this.localForm.controls['calle'].value? this.localForm.controls['calle'].value: '' "
+            [numero]="this.localForm.controls['numero'].value? this.localForm.controls['numero'].value: '' "
+            [ciudad]="this.localForm.controls['ciudad'].value? this.localForm.controls['ciudad'].value: 'Villa Carlos Paz' "
+            (adress_component)="DeCoordenadasANombre($event, localForm)" (coordenadas)="AsignarCoordenadas($event)"
+            (existe)="ExisteRutaLocal($event)">
+          </app-gmap>
+        </div>
+        <p class="error__label" *ngIf="!this.existeRutaLocal">
+          La calle o el numero especificado no existen</p>
         <p class="pedidos__subtitle">Descríbenos la dirección del local donde quieres que busquemos tu producto</p>
         <form [formGroup]="localForm" class="pedidos-form pedidos-form__resized">
           <div class="pedidos-form__con-label">
@@ -100,7 +111,7 @@
           <div class="pedidos-form__con-label">
             <label for="numero"> Número:*</label>
             <input type="number" name="numero" id="numero" formControlName="numero" placeholder="Número de la calle"
-              class="pedidos-form__input"  [ngClass]="{error: TieneErrores(localForm, 'numero')}" />
+              class="pedidos-form__input" [ngClass]="{error: TieneErrores(localForm, 'numero')}" />
           </div>
           <p class="error__label" *ngIf=" Error(localForm, 'numero', 'required')">
             Este campo es requerido</p>
@@ -136,7 +147,8 @@
           <button class="pedidos__button pedidos__button-volver" (click)="CambiarVista(this.vistaActual -1)">
             Atrás</button>
           <button class="pedidos__button"
-            (click)="this.localForm.invalid? submited=true:CambiarVista(this.vistaActual+1)"> Continuar</button>
+            (click)="this.localForm.invalid || !this.existeRutaLocal? submited=true:CambiarVista(this.vistaActual+1)">
+            Continuar</button>
         </div>
       </div>
     </article>
@@ -149,6 +161,22 @@
           Dirección de entrega</h1>
       </div>
       <div class="pedidos__container">
+        <div class="gmaps__container">
+          <app-gmap class="gmaps"
+            [calle]="this.lugarEntregaForm.controls['calle'].value? this.lugarEntregaForm.controls['calle'].value: '' "
+            [numero]="this.lugarEntregaForm.controls['numero'].value? this.lugarEntregaForm.controls['numero'].value: '' "
+            [ciudad]="this.lugarEntregaForm.controls['ciudad'].value? this.lugarEntregaForm.controls['ciudad'].value: 'Villa Carlos Paz' "
+            [desde]="this.coordenadasDesde" (adress_component)="DeCoordenadasANombre($event, lugarEntregaForm, true)"
+            (ruta)="CalcularPrecioPorRuta($event)" (coordenadas)="AsignarCoordenadasHasta($event)"
+            (existe)="ExisteRutaEntrega($event)">
+          </app-gmap>
+        </div>
+        <p class="error__label" *ngIf="!this.existeRutaEntrega">
+          La calle o el numero especificado no existen</p>
+        <p class="pedidos__subtitle"
+          *ngIf="existeRutaEntrega && !lugarEntregaForm.controls['calle'].errors && !lugarEntregaForm.controls['numero'].errors && !lugarEntregaForm.controls['ciudad'].errors">
+          La distancia a
+          recorrer es de {{distancia}}m el precio del envio es {{precio|currency}}</p>
         <p class="pedidos__subtitle">Descríbenos la dirección de entrega</p>
         <form [formGroup]="lugarEntregaForm" class="pedidos-form pedidos-form__resized">
           <div class="pedidos-form__con-label">
@@ -171,7 +199,7 @@
             No debe exceder el límite de caracteres, ni contener ',' o '.' </p>
           <div class="pedidos-form__con-label">
             <label for="ciudad"> Ciudad:*</label>
-            <select class="pedidos-form__input" name="ciudad" id="ciudad" formControlName="ciudad"
+            <select class="pedidos-form__input" name="ciudad" id="ciudad" formControlName="ciudad" [disabled]="true"
               [ngClass]="{error: TieneErrores(lugarEntregaForm, 'ciudad')}">
               <option value="Villa Carlos Paz">Villa Carlos Paz</option>
               <option value="Santa Rosa de Calamuchita"> Santa Rosa de Calamuchita</option>
@@ -214,13 +242,13 @@
           </div>
           <p class="error__label" *ngIf=" Error(lugarEntregaForm, 'fecha', 'required')">
             Este campo es requerido</p>
-            <p class="error__label" *ngIf=" Error(lugarEntregaForm, 'fecha', 'fecha')">
-              La fecha ingresada no puede ser menor a la actual</p>
+          <p class="error__label" *ngIf=" Error(lugarEntregaForm, 'fecha', 'fecha')">
+            La fecha ingresada no puede ser menor a la actual</p>
           <div class="pedidos-form__con-label"
             *ngIf="lugarEntregaForm.controls['entrega'].value == 'programar-entrega'">
             <label for="hora" class="pedidos-form__label">Hora de entrega:*</label>
-            <input type="time" name="hora" id="hora" formControlName="hora" class="pedidos-form__input"
-              [ngClass]="{error: TieneErrores(lugarEntregaForm, 'hora')}" />
+            <input type="time" min="00:00" max="23:59" name="hora" id="hora" formControlName="hora"
+              class="pedidos-form__input" [ngClass]="{error: TieneErrores(lugarEntregaForm, 'hora')}" />
           </div>
           <p class="error__label" *ngIf=" Error(lugarEntregaForm, 'hora', 'righttime')">
             Como mínimo debe elegir haber una hora de diferencia con la hora actual</p>
@@ -232,7 +260,7 @@
           <button class="pedidos__button pedidos__button-volver" (click)="CambiarVista(this.vistaActual -1)">
             Atrás</button>
           <button class="pedidos__button"
-            (click)="this.lugarEntregaForm.controls['hora'].updateValueAndValidity();this.lugarEntregaForm.invalid? submited=true:CambiarVista(this.vistaActual+1)">
+            (click)="this.lugarEntregaForm.controls['hora'].updateValueAndValidity();this.lugarEntregaForm.invalid || !this.existeRutaEntrega? submited=true:CambiarVista(this.vistaActual+1)">
             Continuar</button>
         </div>
       </div>
@@ -369,8 +397,8 @@
           </div>
           <p class="error__label" *ngIf=" Error(tarjetaForm, 'vencimiento', 'required')">
             Este campo es requerido</p>
-            <p class="error__label" *ngIf=" Error(tarjetaForm, 'vencimiento', 'mes')">
-              Tarjeta vencida</p>
+          <p class="error__label" *ngIf=" Error(tarjetaForm, 'vencimiento', 'mes')">
+            Tarjeta vencida</p>
           <div class="pedidos-form__con-label">
             <label for="codigo"> Código de seguridad:*</label>
             <input type="number" (mouseup)="flipped=true" name="codigo" id="codigo" formControlName="codigo"
@@ -426,14 +454,16 @@
             lo antes posible</p>
           <p class="pedidos__subtitle" *ngIf="lugarEntregaForm.controls['entrega'].value == 'programar-entrega'">Fecha
             de
-            entrega: {{lugarEntregaForm.controls["fecha"].value}} Hora de entrega:
+            entrega: {{lugarEntregaForm.controls["fecha"].value}} </p>
+          <p class="pedidos__subtitle" *ngIf="lugarEntregaForm.controls['entrega'].value == 'programar-entrega'"> Hora
+            de entrega:
             {{lugarEntregaForm.controls["hora"].value}}</p>
         </div>
         <div class="pedidos__confirmacion__container ">
 
           <p class="pedidos__subtitle pedidos__confirmacion__title">Pago</p>
           <hr>
-          <p class="pedidos__subtitle">Total a pagar: {{TotalPago()| currency}}</p>
+          <p class="pedidos__subtitle">Total a pagar: {{precio| currency}}</p>
           <p class="pedidos__subtitle">Método de pago: {{this.metodoPago}}</p>
           <p class="pedidos__subtitle" *ngIf="this.metodoPago=='Efectivo'">Monto a pagar en efectivo:
             {{efectivoForm.controls["monto"].value | currency}}</p>
