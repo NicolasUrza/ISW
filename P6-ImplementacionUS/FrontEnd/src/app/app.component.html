@@ -86,17 +86,16 @@
             [calle]="this.localForm.controls['calle'].value? this.localForm.controls['calle'].value: '' "
             [numero]="this.localForm.controls['numero'].value? this.localForm.controls['numero'].value: '' "
             [ciudad]="this.localForm.controls['ciudad'].value? this.localForm.controls['ciudad'].value: 'Villa Carlos Paz' "
-            [hasta]="this.coordenadasHasta"
-            (adress_component)="DeCoordenadasANombre($event, localForm)" (coordenadas)="AsignarCoordenadas($event)"
-            (existe)="ExisteRutaLocal($event)"
-            (ruta)="CalcularPrecioPorRuta($event)"
-            >
+            [hasta]="this.coordenadasHasta" (adress_component)="DeCoordenadasANombre($event, localForm)"
+            (coordenadas)="AsignarCoordenadas($event)" (existe)="ExisteRutaLocal($event)"
+            (ruta)="CalcularPrecioPorRuta($event)">
           </app-gmap>
         </div>
         <p class="error__label" *ngIf="!this.existeRutaLocal">
           La calle o el numero especificado no existen o están fuera de nuestra area de cobertura</p>
-          <p class="error__label" *ngIf="!CallesDistintas() && lugarEntregaForm.controls['calle'].touched && lugarEntregaForm.controls['numero'].touched ">
-            La direccion de entrega debe ser distinta de la del local</p>
+        <p class="error__label"
+          *ngIf="!CallesDistintas() && lugarEntregaForm.controls['calle'].touched && lugarEntregaForm.controls['numero'].touched ">
+          La direccion de entrega debe ser distinta de la del local</p>
         <p class="pedidos__subtitle">Descríbenos la dirección del local donde quieres que busquemos tu producto</p>
         <form [formGroup]="localForm" class="pedidos-form pedidos-form__resized">
           <div class="pedidos-form__con-label">
@@ -171,10 +170,12 @@
             (existe)="ExisteRutaEntrega($event)">
           </app-gmap>
         </div>
-        <p class="error__label" *ngIf="!this.existeRutaEntrega && lugarEntregaForm.controls['calle'].touched && lugarEntregaForm.controls['numero'].touched">
+        <p class="error__label"
+          *ngIf="!this.existeRutaEntrega && lugarEntregaForm.controls['calle'].touched && lugarEntregaForm.controls['numero'].touched">
           La calle o el numero especificado no existen o están fuera de nuestra area de cobertura</p>
-          <p class="error__label" *ngIf="!CallesDistintas() && lugarEntregaForm.controls['calle'].touched && lugarEntregaForm.controls['numero'].touched ">
-            La direccion de entrega debe ser distinta de la del local</p>
+        <p class="error__label"
+          *ngIf="!CallesDistintas() && lugarEntregaForm.controls['calle'].touched && lugarEntregaForm.controls['numero'].touched ">
+          La direccion de entrega debe ser distinta de la del local</p>
         <p class="pedidos__subtitle"
           *ngIf="existeRutaEntrega && !lugarEntregaForm.controls['calle'].errors && !lugarEntregaForm.controls['numero'].errors && !lugarEntregaForm.controls['ciudad'].errors">
           La distancia a
@@ -248,8 +249,8 @@
             Este campo es requerido</p>
           <p class="error__label" *ngIf=" Error(lugarEntregaForm, 'fecha', 'fecha')">
             La fecha ingresada no puede ser menor a la actual</p>
-            <p class="error__label" *ngIf=" Error(lugarEntregaForm, 'fecha', 'mayor-semana')">
-              Solo puede pedir hasta con una semana de anticipación</p>
+          <p class="error__label" *ngIf=" Error(lugarEntregaForm, 'fecha', 'mayor-semana')">
+            Solo puede pedir hasta con una semana de anticipación</p>
           <div class="pedidos-form__con-label"
             *ngIf="lugarEntregaForm.controls['entrega'].value == 'programar-entrega'">
             <label for="hora" class="pedidos-form__label">Hora de entrega:*</label>
@@ -386,11 +387,9 @@
           <div class="pedidos-form__con-label">
             <label for="numeroTarjeta"> Número de tarjeta:*</label>
             <input type="number" name="numeroTarjeta" id="numeroTarjeta" formControlName="numero"
-              placeholder="XXXX XXXX XXXX XXXX" class="pedidos-form__input"
-              min="1" max="9999999999999999"
+              placeholder="XXXX XXXX XXXX XXXX" class="pedidos-form__input" min="1" max="9999999999999999"
               oninput="if(this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-              (mouseup)="flipped=false" maxlength="16"
-              [ngClass]="{error: TieneErrores(tarjetaForm, 'numero')}" />
+              (mouseup)="flipped=false" maxlength="16" [ngClass]="{error: TieneErrores(tarjetaForm, 'numero')}" />
           </div>
           <p class="error__label" *ngIf=" Error(tarjetaForm, 'numero', 'required')">
             Este campo es requerido</p>
@@ -413,8 +412,7 @@
             <input type="number" (mouseup)="flipped=true" name="codigo" id="codigo" formControlName="codigo"
               placeholder="CVC" class="pedidos-form__input" maxlength="3"
               oninput="if(this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" min="0"
-              max="999"
-              [ngClass]="{error: TieneErrores(tarjetaForm, 'codigo')}" />
+              max="999" [ngClass]="{error: TieneErrores(tarjetaForm, 'codigo')}" />
           </div>
           <p class="error__label" *ngIf=" Error(tarjetaForm, 'codigo', 'required')">
             Este campo es requerido</p>
@@ -442,6 +440,10 @@
           <p class="pedidos__subtitle pedidos__confirmacion__title">Productos Pedidos</p>
           <hr>
           <p class="pedidos__subtitle">{{pedidoForm.controls["objetos"].value}} </p>
+          <div style="display: flex; justify-content: center; flex-wrap: wrap; width:90%; gap: 2%; margin-top: 1rem;"
+            *ngIf="ExisteImagen()">
+            <img width="100px" height="100px" *ngFor="let imagen of imagenSubida" [src]="imagen">
+          </div>
         </div>
         <div class="pedidos__confirmacion__container">
           <p class="pedidos__subtitle pedidos__confirmacion__title">Dirección del local</p>
