@@ -13,6 +13,7 @@ export class GmapComponent implements OnChanges {
   @Input() calle: string = '';
   @Input() numero: string = '';
   @Input() desde: google.maps.LatLngLiteral | undefined;
+  @Input() hasta: google.maps.LatLngLiteral | undefined;
   @Output() adress_component = new EventEmitter<google.maps.GeocoderAddressComponent[]>();
   @Output() ruta = new EventEmitter<number>();
   @Output() coordenadas = new EventEmitter<google.maps.LatLngLiteral>();
@@ -56,10 +57,13 @@ export class GmapComponent implements OnChanges {
       console.log(results[0].address_components);
       this.adress_component.emit(results[0].address_components);
       console.log("estoy en mostrar calle")
-      if (this.desde) {
+      if (this.desde || this.hasta) {
         console.log("estoy en mostrar calle y en desde")
         this.CalcularValor();
       }
+
+
+
     }
     );
   }
@@ -68,11 +72,21 @@ export class GmapComponent implements OnChanges {
     console.log("estoy en calcular valor")
     console.log(this.desde);
     console.log(this.markerPosition);
-    let request = {
-      destination: this.desde!,
-      origin: this.markerPosition!,
-      travelMode: google.maps.TravelMode.DRIVING
-    };
+    let request;
+    if (this.desde) {
+      request = {
+        destination: this.desde!,
+        origin: this.markerPosition!,
+        travelMode: google.maps.TravelMode.DRIVING
+      };
+    }
+    else {
+       request = {
+        destination: this.markerPosition!,
+        origin: this.hasta!,
+        travelMode: google.maps.TravelMode.DRIVING
+      };
+    }
     console.log(request);
     this.mapDirectionsService.route(request).subscribe((results) => {
       console.log("estoy en la query");
@@ -81,7 +95,6 @@ export class GmapComponent implements OnChanges {
       this.ruta.emit(results.result?.routes[0]?.legs[0]?.distance?.value);
     }
     );
-
   }
   ngOnChanges(changes: SimpleChanges) {
     if (changes['ciudad'] || changes['calle'] || changes['numero']) {
@@ -92,7 +105,7 @@ export class GmapComponent implements OnChanges {
         let i = this.ValidarExistencia(results);
         this.markerPosition = results[i].geometry.location.toJSON();
         this.coordenadas.emit(this.markerPosition);
-        if (this.desde) {
+        if (this.desde || this.hasta) {
           this.CalcularValor();
         }
         this.center = results[i].geometry.location.toJSON();
@@ -106,8 +119,8 @@ export class GmapComponent implements OnChanges {
     let calleExiste = false;
     let numeroExiste = false;
     let ciudadExiste = false;
-    let i =0;
-    let j =0;
+    let i = 0;
+    let j = 0;
     if (results.length == 0) {
       console.log("no existe")
       this.existe.emit(false);
@@ -116,7 +129,7 @@ export class GmapComponent implements OnChanges {
       console.log("algo")
       console.log(results);
       results.forEach((result) => {
-        
+
         if (!calleExiste || !numeroExiste || !ciudadExiste) {
           calleExiste = false;
           numeroExiste = false;
@@ -136,8 +149,8 @@ export class GmapComponent implements OnChanges {
           });
         }
         if (calleExiste && numeroExiste && ciudadExiste) {
-          j=i;
-        } 
+          j = i;
+        }
         i++;
       })
     }
@@ -150,6 +163,6 @@ export class GmapComponent implements OnChanges {
       this.existe.emit(false);
       return 0;
     }
-    
+
   }
 }

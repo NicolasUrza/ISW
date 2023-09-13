@@ -86,7 +86,7 @@
             [calle]="this.localForm.controls['calle'].value? this.localForm.controls['calle'].value: '' "
             [numero]="this.localForm.controls['numero'].value? this.localForm.controls['numero'].value: '' "
             [ciudad]="this.localForm.controls['ciudad'].value? this.localForm.controls['ciudad'].value: 'Villa Carlos Paz' "
-            [desde]="this.coordenadasDesde"
+            [hasta]="this.coordenadasHasta"
             (adress_component)="DeCoordenadasANombre($event, localForm)" (coordenadas)="AsignarCoordenadas($event)"
             (existe)="ExisteRutaLocal($event)"
             (ruta)="CalcularPrecioPorRuta($event)"
@@ -386,7 +386,10 @@
           <div class="pedidos-form__con-label">
             <label for="numeroTarjeta"> Número de tarjeta:*</label>
             <input type="number" name="numeroTarjeta" id="numeroTarjeta" formControlName="numero"
-              placeholder="XXXX XXXX XXXX XXXX" class="pedidos-form__input" (mouseup)="flipped=false" maxlength="16"
+              placeholder="XXXX XXXX XXXX XXXX" class="pedidos-form__input"
+              min="1" max="9999999999999999"
+              oninput="if(this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+              (mouseup)="flipped=false" maxlength="16"
               [ngClass]="{error: TieneErrores(tarjetaForm, 'numero')}" />
           </div>
           <p class="error__label" *ngIf=" Error(tarjetaForm, 'numero', 'required')">
@@ -409,6 +412,8 @@
             <label for="codigo"> Código de seguridad:*</label>
             <input type="number" (mouseup)="flipped=true" name="codigo" id="codigo" formControlName="codigo"
               placeholder="CVC" class="pedidos-form__input" maxlength="3"
+              oninput="if(this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" min="0"
+              max="999"
               [ngClass]="{error: TieneErrores(tarjetaForm, 'codigo')}" />
           </div>
           <p class="error__label" *ngIf=" Error(tarjetaForm, 'codigo', 'required')">

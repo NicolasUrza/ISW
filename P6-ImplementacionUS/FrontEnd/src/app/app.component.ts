@@ -74,10 +74,10 @@ export class AppComponent {
     }
     else if ((this.lugarEntregaForm.invalid || !this.existeRutaEntrega || !this.CallesDistintas()) && this.hastaCompletado >= 3) {
       hastaCompletado = 3;
-    } else if ((this.metodoPago == "Tarjeta" && this.tarjetaForm.invalid || this.metodoPago == "Efectivo" && this.efectivoForm.invalid) && this.hastaCompletado >= 5) {
+    } else if (((this.metodoPago == "Tarjeta" && this.tarjetaForm.invalid) || (this.metodoPago == "Efectivo" && (this.efectivoForm.invalid || !this.isPrecioCorrecto(this.efectivoForm.controls["monto"].value)))) && this.hastaCompletado >= 5) {
       hastaCompletado = 5;
     }
-    else if ((this.metodoPago == "Tarjeta" && this.tarjetaForm.invalid || this.metodoPago == "Efectivo" && this.efectivoForm.invalid) && this.hastaCompletado >= 4) {
+    else if (((this.metodoPago == "Tarjeta" && this.tarjetaForm.invalid) || (this.metodoPago == "Efectivo" && this.efectivoForm.invalid)) && this.hastaCompletado >= 4) {
       hastaCompletado = 4;
     }
     else if (this.hastaCompletado > this.vistaActual) {
@@ -155,6 +155,11 @@ export class AppComponent {
     }
     if (this.vistaActual == 2) {
       this.lugarEntregaForm.controls["ciudad"].setValue(this.localForm.controls["ciudad"].value!);
+    }
+    if (vista == 6) {
+      if (this.metodoPago == "Efectivo" && this.efectivoForm.invalid) {
+        vista = 5;
+      }
     }
     this.salidaIzquierda = true;
     this.submited = false;
@@ -380,7 +385,7 @@ export class AppComponent {
     });
 
     this.efectivoForm = new FormGroup({
-      monto: new FormControl('', [Validators.required, Validators.pattern('[0-9]{1,7}(?:\.[0-9]{1,2})?')]),
+      monto: new FormControl('', [Validators.required, Validators.pattern('[0-9]{1,7}(?:\.[0-9]{1,2})?'), this.PrecioValidator()]),
     });
   }
   Terminar(e: boolean) {
@@ -393,7 +398,6 @@ export class AppComponent {
     this.imagenSubida = new Array<string>();
     this.loading = false;
     this.confirmado = false;
-
     this.salidaIzquierda = false;
     this.salidaDerecha = false;
     this.entradaIzquierda = false;
@@ -432,6 +436,19 @@ export class AppComponent {
       }
 
     });
+  }
+  PrecioValidator() {
+    return (control: AbstractControl): ValidationErrors | null => {
+      return this.isPrecioCorrecto(control.value) ? null : { 'mayor-semana': { value: control.value } };
+    };
+  }
+  isPrecioCorrecto(valorefectivo: string) {
+    if (valorefectivo) {
+      if (parseFloat(valorefectivo) < this.precio) {
+        return false;
+      }
+    }
+    return true;
   }
   SemanaValidator() {
     return (control: AbstractControl): ValidationErrors | null => {
