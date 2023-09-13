@@ -442,7 +442,7 @@
           <p class="pedidos__subtitle">{{pedidoForm.controls["objetos"].value}} </p>
           <div style="display: flex; justify-content: center; flex-wrap: wrap; width:90%; gap: 2%; margin-top: 1rem;"
             *ngIf="ExisteImagen()">
-            <img width="100px" height="100px" *ngFor="let imagen of imagenSubida" [src]="imagen">
+            <img width="70px" height="100px" *ngFor="let imagen of imagenSubida" [src]="imagen">
           </div>
         </div>
         <div class="pedidos__confirmacion__container">
