@@ -1,16 +1,11 @@
 <app-spinner [loading]="loading" [confirmado]="confirmado" (VolverAInicio)="Terminar($event)"></app-spinner>
-
-
 <header>
   <img alt="Deliver Eat logo" src="assets/Icon.png" (mouseup)="CambiarVista(0)" />
   <span>Bienvenido</span>
-
 </header>
 <main>
-
   <section>
     <!--Seleccion del tipo de pedido-->
-
     <article class="pedidos" [ngClass]="{'salida-izquierda': salidaIzquierda}" *ngIf="vistaActual==0">
       <div class="pedidos__header">
         <h1 class="pedidos__title">Pedidos</h1>
@@ -93,7 +88,9 @@
             [ciudad]="this.localForm.controls['ciudad'].value? this.localForm.controls['ciudad'].value: 'Villa Carlos Paz' "
             [desde]="this.coordenadasDesde"
             (adress_component)="DeCoordenadasANombre($event, localForm)" (coordenadas)="AsignarCoordenadas($event)"
-            (existe)="ExisteRutaLocal($event)">
+            (existe)="ExisteRutaLocal($event)"
+            (ruta)="CalcularPrecioPorRuta($event)"
+            >
           </app-gmap>
         </div>
         <p class="error__label" *ngIf="!this.existeRutaLocal">

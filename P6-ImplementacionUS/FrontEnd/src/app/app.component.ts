@@ -27,7 +27,13 @@ export class AppComponent {
   distancia = 0;
   existeRutaLocal = true;
   existeRutaEntrega = true;
+  pedidoForm!: FormGroup;
+  localForm!: FormGroup;
+  lugarEntregaForm!: FormGroup;
+  tarjetaForm!: FormGroup;
+  efectivoForm!: FormGroup;
   constructor() {
+    this.SetearForms();
     this.lugarEntregaForm.controls["ciudad"].disable();
   }
   ExisteRutaLocal(existe: boolean) {
@@ -82,35 +88,7 @@ export class AppComponent {
     }
     return hastaCompletado;
   }
-  pedidoForm = new FormGroup({
-    objetos: new FormControl('', [Validators.required, Validators.maxLength(1200)]),
-    imagen: new FormControl('')
-  });
-  localForm = new FormGroup({
-    calle: new FormControl('', [Validators.required, Validators.maxLength(120)]),
-    numero: new FormControl('', [Validators.required, Validators.pattern('[0-9]{1,7}')]),
-    ciudad: new FormControl('', [Validators.required, Validators.maxLength(120)]),
-    referencia: new FormControl('', [Validators.maxLength(120)])
-  });
-  lugarEntregaForm = new FormGroup({
-    calle: new FormControl('', [Validators.required, Validators.maxLength(120)]),
-    numero: new FormControl('', [Validators.required, Validators.pattern('[0-9]{1,7}')]),
-    ciudad: new FormControl('', [Validators.required, Validators.maxLength(120), this.isSameCityValidator()]),
-    referencia: new FormControl('', [Validators.maxLength(120)]),
-    entrega: new FormControl('lo-antes-posible', [Validators.maxLength(120)]),
-    fecha: new FormControl(this.ConseguirFechaActual(), []),
-    hora: new FormControl('', [])
-  });
-  tarjetaForm = new FormGroup({
-    nombre: new FormControl('', [Validators.required, Validators.maxLength(40)]),
-    numero: new FormControl('', [Validators.required, Validators.pattern('[0-9]{16,16}'), this.isVisa()]),
-    vencimiento: new FormControl("", [Validators.required, Validators.maxLength(120), this.MesValidator()]),
-    codigo: new FormControl('', [Validators.required, Validators.pattern('[0-9]{3,3}')]),
-  });
 
-  efectivoForm = new FormGroup({
-    monto: new FormControl('', [Validators.required, Validators.pattern('[0-9]{1,7}(?:\.[0-9]{1,2})?')]),
-  });
   ConseguirFechaActual() {
     var fecha = new Date();
     var dia = fecha.getDate();
@@ -374,7 +352,7 @@ export class AppComponent {
 
   }
 
-  Resetear() {
+  SetearForms() {
     this.pedidoForm = new FormGroup({
       objetos: new FormControl('', [Validators.required, Validators.maxLength(1200)]),
       imagen: new FormControl('')
@@ -428,7 +406,7 @@ export class AppComponent {
     this.distancia = 0;
     this.existeRutaLocal = true;
     this.existeRutaEntrega = true;
-    this.Resetear();
+    this.SetearForms();
 
   }
   FormatearFecha(fecha: string) {
