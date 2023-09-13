@@ -81,55 +81,75 @@ export class GmapComponent implements OnChanges {
       this.ruta.emit(results.result?.routes[0]?.legs[0]?.distance?.value);
     }
     );
-    // .pipe((response) =>
-    //   this.ruta.emit( response.result?.routes[0]?.legs[0]?.distance?.value));
+
   }
   ngOnChanges(changes: SimpleChanges) {
     if (changes['ciudad'] || changes['calle'] || changes['numero']) {
       this.geocoder.geocode({
-        address: this.numero + " " + this.calle + " , " + this.ciudad + ' , AR'
+        address: `${this.numero} ${this.calle}, ${this.ciudad}, AR`
       }).subscribe(({ results }) => {
         console.log(results);
-        this.ValidarExistencia(results);
-        this.markerPosition = results[0].geometry.location.toJSON();
+        let i = this.ValidarExistencia(results);
+        this.markerPosition = results[i].geometry.location.toJSON();
         this.coordenadas.emit(this.markerPosition);
         if (this.desde) {
           this.CalcularValor();
         }
-        this.center = results[0].geometry.location.toJSON();
+        this.center = results[i].geometry.location.toJSON();
       })
 
         ;
     }
   }
 
-  ValidarExistencia(results: google.maps.GeocoderResult[]) {
+  ValidarExistencia(results: google.maps.GeocoderResult[]): number {
     let calleExiste = false;
     let numeroExiste = false;
+    let ciudadExiste = false;
+    let i =0;
+    let j =0;
     if (results.length == 0) {
       console.log("no existe")
       this.existe.emit(false);
     }
     else {
-      results[0].address_components.forEach(element => {
-        console.log("estoy en el foreach");
-        console.log(element);
-        if (element.types.includes("street_number")) {
-          console.log("numero existe");
-          numeroExiste = true;
+      console.log("algo")
+      console.log(results);
+      results.forEach((result) => {
+        
+        if (!calleExiste || !numeroExiste || !ciudadExiste) {
+          calleExiste = false;
+          numeroExiste = false;
+          ciudadExiste = false;
+          result.address_components.forEach(element => {
+            console.log("estoy en el foreach");
+            console.log(element);
+            if (element.long_name == this.numero) {
+              numeroExiste = true;
+            }
+            if (element.long_name.toLowerCase() == this.calle.toLowerCase()) {
+              calleExiste = true;
+            }
+            if (element.long_name == this.ciudad) {
+              ciudadExiste = true;
+            }
+          });
         }
-        if (element.types.includes("route")) {
-          console.log("calle existe");
-          calleExiste = true;
-        }
-      });
+        if (calleExiste && numeroExiste && ciudadExiste) {
+          j=i;
+        } 
+        i++;
+      })
     }
-    if (calleExiste && numeroExiste) {
+    if (calleExiste && numeroExiste && ciudadExiste) {
       console.log("existe");
       this.existe.emit(true);
+      return j;
     } else {
       console.log("no existe")
       this.existe.emit(false);
+      return 0;
     }
+    
   }
 }
